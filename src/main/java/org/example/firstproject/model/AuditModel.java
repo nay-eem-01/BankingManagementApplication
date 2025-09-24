@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 public abstract class AuditModel<U> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "user_seq",sequenceName = "user_sequence",allocationSize = 1)
     @Column(name = AppTables.AuditModelTable.ID)
     private  Long id;
 
