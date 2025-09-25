@@ -13,7 +13,7 @@ import org.example.firstproject.model.AuditModel;
 public class User extends AuditModel<String> {
 
 //    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
 
     private String name;
@@ -21,3 +21,4 @@ public class User extends AuditModel<String> {
     private String email;
 
 }
+

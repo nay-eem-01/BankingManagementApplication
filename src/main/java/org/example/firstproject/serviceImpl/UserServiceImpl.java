@@ -1,21 +1,31 @@
 package org.example.firstproject.serviceImpl;
 
+import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.model.request.SignUpRequest;
+import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
 import org.example.firstproject.security.PasswordEncoder;
 import org.example.firstproject.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -23,14 +33,18 @@ public class UserServiceImpl implements UserService {
     public void createNewUser(SignUpRequest signUpRequest) {
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
 
-        if (userExist != null){
-            throw new RuntimeException("User with this email already exist");
-        }
+//        if (userExist != null){
+//            throw new RuntimeException("User with this email already exist");
+//        }
         String username = signUpRequest.getName();
         String email = signUpRequest.getEmail();
         String password = signUpRequest.getPassword();
 
         User signedInUser = new User();
+
+        System.out.println(username);
+        System.out.println(email);
+        System.out.println(password);
 
         signedInUser.setEmail(email);
         signedInUser.setName(username);
@@ -39,4 +53,61 @@ public class UserServiceImpl implements UserService {
         userRepository.save(signedInUser);
 
     }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+
+        List<User> allUsers = userRepository.findAll();
+        List<UserResponse> allUserResponse = allUsers
+                .stream()
+                .map(user ->
+                        modelMapper.map(user, UserResponse.class))
+                .collect(Collectors.toList());
+        return allUserResponse;
+    }
+
+    @Override
+    public UserResponse getUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    @Override
+    public UserResponse getUserByEmail(String email) {
+
+
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    @Override
+    public UserResponse getUserByUsername(String username) {
+        User user = userRepository.findByName(username).orElse(null);
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    @Override
+    public UserDto updateUser(Long id, UserDto userDto) {
+
+        User updatedUser = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
+
+        if (userDto.getName() != null) {
+            updatedUser.setName(userDto.getName());
+        }
+
+        if (userDto.getEmail() != null) {
+            updatedUser.setEmail(userDto.getEmail());
+        }
+
+        return modelMapper.map(userRepository.save(updatedUser), UserDto.class);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
+        userRepository.delete(user);
+
+    }
+
 }
