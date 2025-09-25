@@ -1,5 +1,6 @@
 package org.example.firstproject.controller;
 
+import jakarta.validation.Valid;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.model.HttpResponse;
 import org.example.firstproject.model.request.SignUpRequest;
@@ -21,7 +22,7 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    public ResponseEntity<HttpResponse> createUser(@RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<HttpResponse> createUser(@Valid @RequestBody SignUpRequest signUpRequest){
         userService.createNewUser(signUpRequest);
         return HttpResponse.getResponseEntity(true,"User created successfully");
     }
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<HttpResponse> updateUser(@PathVariable Long id,@RequestBody UserDto userDto){
+    public ResponseEntity<HttpResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto){
         UserDto updatedUser = userService.updateUser(id,userDto);
         return HttpResponse.getResponseEntity(HttpStatus.OK,"User info updated successfully",updatedUser);
     }
