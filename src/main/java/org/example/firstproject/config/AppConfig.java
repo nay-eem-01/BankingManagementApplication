@@ -1,6 +1,7 @@
 package org.example.firstproject.config;
 
 import org.example.firstproject.model.AuditorAwareImpl;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -13,5 +14,10 @@ public class AppConfig {
     @Bean
     public AuditorAware<String> auditorAware(){
         return new AuditorAwareImpl();
+    }
+
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
     }
 }
