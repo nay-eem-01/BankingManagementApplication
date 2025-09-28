@@ -5,6 +5,7 @@ import org.example.firstproject.entity.User;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
+import org.example.firstproject.repository.UserRepositoryCustom;
 import org.example.firstproject.security.PasswordEncoder;
 import org.example.firstproject.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -22,33 +23,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final UserRepositoryCustom userRepositoryCustom;
 
 
-    @Override
-    public List<String> getAllUniqueName() {
-        List<String> names = userRepository.findUniqueByName();
-        return names;
-    }
 
-    @Override
-    public List<User> getUserNameStartsWith(String keyword) {
-        return userRepository.findByNameStartingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameEndsWith(String keyword) {
-        return userRepository.findByNameEndingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameContains(String keyword) {
-        return userRepository.findByNameContains(keyword);
-    }
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, UserRepositoryCustom userRepositoryCustom) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
+        this.userRepositoryCustom = userRepositoryCustom;
     }
 
 
@@ -133,6 +116,36 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
 
     }
+
+    @Override
+    public List<String> getAllUniqueName() {
+        List<String> names = userRepository.findUniqueByName();
+        return names;
+    }
+
+    @Override
+    public List<User> getUserNameStartsWith(String keyword) {
+        return userRepository.findByNameStartingWith(keyword);
+    }
+
+    @Override
+    public List<User> getUserNameEndsWith(String keyword) {
+        return userRepository.findByNameEndingWith(keyword);
+    }
+
+    @Override
+    public List<User> getUserNameContains(String keyword) {
+        return userRepository.findByNameContains(keyword);
+    }
+
+    @Override
+    public List<User> getUserByCriteria(String name) {
+        return userRepositoryCustom.findByName(name);
+    }
+
+
+
+
 
 
 

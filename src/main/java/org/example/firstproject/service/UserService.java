@@ -28,4 +28,6 @@ public interface UserService {
     List<User> getUserNameEndsWith(String keyword);
 
     List<User> getUserNameContains(String keyword);
+
+    List<User> getUserByCriteria(String name);
 }

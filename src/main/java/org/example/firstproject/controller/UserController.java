@@ -97,5 +97,12 @@ public class UserController {
         return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
+    @GetMapping("/user/criteria")
+    public ResponseEntity<List<User>> getUserByCriteria(@RequestParam String keyword){
+        List<User> users = userService.getUserByCriteria(keyword);
+
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
 
 }
