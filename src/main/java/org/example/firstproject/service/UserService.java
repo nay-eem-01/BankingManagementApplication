@@ -1,6 +1,7 @@
 package org.example.firstproject.service;
 
 import org.example.firstproject.dto.UserDto;
+import org.example.firstproject.entity.User;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 
@@ -22,4 +23,9 @@ public interface UserService {
     void deleteUser(Long id);
 
     List<String> getAllUniqueName();
+
+    List<User> getUserNameStartsWith(String keyword);
+    List<User> getUserNameEndsWith(String keyword);
+
+    List<User> getUserNameContains(String keyword);
 }

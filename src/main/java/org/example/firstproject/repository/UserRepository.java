@@ -21,6 +21,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query("select distinct u.name from User u order by u.name desc limit 05")
     List<String> findUniqueByName();
 
+    List<User> findByNameStartingWith(String keyword);
+
+    List<User> findByNameEndingWith(String name);
+
+    List<User> findByNameContains(String name);
+
+
 
 
 }

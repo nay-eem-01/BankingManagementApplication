@@ -2,6 +2,7 @@ package org.example.firstproject.controller;
 
 import jakarta.validation.Valid;
 import org.example.firstproject.dto.UserDto;
+import org.example.firstproject.entity.User;
 import org.example.firstproject.model.HttpResponse;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
@@ -73,6 +74,27 @@ public class UserController {
     public ResponseEntity<List<String>> getAllUniqueName(){
         List<String> names = userService.getAllUniqueName();
         return new ResponseEntity<>(names,HttpStatus.OK);
+    }
+
+    @GetMapping("/name-list/startsWith")
+    public ResponseEntity<List<User>> getUserNameStartsWith(@RequestParam String keyword){
+        List<User> users = userService.getUserNameStartsWith(keyword);
+
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @GetMapping("/name-list/endsWith")
+    public ResponseEntity<List<User>> getUserNameEndsWith(@RequestParam String keyword){
+        List<User> users = userService.getUserNameEndsWith(keyword);
+
+        return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @GetMapping("/name-list/contains")
+    public ResponseEntity<List<User>> getUserNameContains(@RequestParam String keyword){
+        List<User> users = userService.getUserNameContains(keyword);
+
+        return new ResponseEntity<>(users,HttpStatus.OK);
     }
 
 

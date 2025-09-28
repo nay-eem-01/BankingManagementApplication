@@ -18,15 +18,32 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
+
+
     @Override
     public List<String> getAllUniqueName() {
         List<String> names = userRepository.findUniqueByName();
         return names;
     }
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
+    @Override
+    public List<User> getUserNameStartsWith(String keyword) {
+        return userRepository.findByNameStartingWith(keyword);
+    }
+
+    @Override
+    public List<User> getUserNameEndsWith(String keyword) {
+        return userRepository.findByNameEndingWith(keyword);
+    }
+
+    @Override
+    public List<User> getUserNameContains(String keyword) {
+        return userRepository.findByNameContains(keyword);
+    }
 
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
@@ -39,9 +56,6 @@ public class UserServiceImpl implements UserService {
     public void createNewUser(SignUpRequest signUpRequest) {
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
 
-//        if (userExist != null){
-//            throw new RuntimeException("User with this email already exist");
-//        }
         String username = signUpRequest.getName();
         String email = signUpRequest.getEmail();
         String password = signUpRequest.getPassword();
@@ -119,5 +133,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
 
     }
+
+
 
 }
