@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Override
+    public List<String> getAllUniqueName() {
+        List<String> names = userRepository.findUniqueByName();
+        return names;
+    }
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -82,9 +88,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse getUserByUsername(String username) {
-        User user = userRepository.findByName(username).orElse(null);
-        return modelMapper.map(user, UserResponse.class);
+    public List<UserResponse> getUserByUsername(String username) {
+        List<User>  users = userRepository.findDistinctByName(username);
+        List<UserResponse> userResponses = users.stream()
+                .map(user ->
+                        modelMapper.map(user, UserResponse.class))
+                .collect(Collectors.toList());
+        return userResponses;
     }
 
     @Override

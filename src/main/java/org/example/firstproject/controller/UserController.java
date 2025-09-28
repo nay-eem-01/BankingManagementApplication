@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping("/get-user/username")
     public ResponseEntity<HttpResponse> getUserByUsername(@RequestParam String username){
-        UserResponse userResponse = userService.getUserByUsername(username);
+        List<UserResponse> userResponse = userService.getUserByUsername(username);
         return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",userResponse);
     }
 
@@ -67,6 +67,12 @@ public class UserController {
     public ResponseEntity<HttpResponse> deleteUserById(@PathVariable Long id){
         userService.deleteUser(id);
         return HttpResponse.getResponseEntity(true,"Deleted successfully");
+    }
+
+    @GetMapping("/name-list")
+    public ResponseEntity<List<String>> getAllUniqueName(){
+        List<String> names = userService.getAllUniqueName();
+        return new ResponseEntity<>(names,HttpStatus.OK);
     }
 
 

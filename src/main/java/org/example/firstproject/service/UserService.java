@@ -15,9 +15,11 @@ public interface UserService {
 
     UserResponse getUserByEmail(String email);
 
-    UserResponse getUserByUsername(String username);
+    List<UserResponse> getUserByUsername(String username);
 
     UserDto updateUser(Long id, UserDto userDto);
 
     void deleteUser(Long id);
+
+    List<String> getAllUniqueName();
 }
