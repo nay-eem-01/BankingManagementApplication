@@ -1,6 +1,6 @@
 package org.example.firstproject.utils;
 
-import org.example.firstproject.model.PaginatedResponse;
+import org.example.firstproject.model.response.PaginatedResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 

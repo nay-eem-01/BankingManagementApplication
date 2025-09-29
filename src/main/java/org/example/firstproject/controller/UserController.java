@@ -3,12 +3,13 @@ package org.example.firstproject.controller;
 import jakarta.validation.Valid;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
-import org.example.firstproject.model.HttpResponse;
-import org.example.firstproject.model.PaginatedResponse;
+import org.example.firstproject.model.response.HttpResponse;
+import org.example.firstproject.model.response.PaginatedResponse;
 import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.service.UserService;
+import org.example.firstproject.service.UserServiceRestClient;
 import org.example.firstproject.utils.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,12 @@ import static org.example.firstproject.constatnt.AppConstants.*;
 public class UserController {
     private final UserService userService;
     private final PaginationUtil paginationUtil;
+    private final UserServiceRestClient userServiceRestClient;
 
-    public UserController(UserService userService, PaginationUtil paginationUtil) {
+    public UserController(UserService userService, PaginationUtil paginationUtil, UserServiceRestClient userServiceRestClient) {
         this.userService = userService;
         this.paginationUtil = paginationUtil;
+        this.userServiceRestClient = userServiceRestClient;
     }
 
     @PostMapping("/create-user")
@@ -122,6 +125,18 @@ public class UserController {
         PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
         Page<User> page = userService.getAllUserPaginated(paginationArgs);
         return new ResponseEntity<>(paginationUtil.buildingPaginatedResponse(page),HttpStatus.OK);
+    }
+
+    @GetMapping("/user/ext")
+    public ResponseEntity<HttpResponse> getAllUserFromExternalAPI(){
+        List<UserResponse> users = userServiceRestClient.getAllUser();
+        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",users);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<HttpResponse> getUserFromExternalAPI(@PathVariable Long id){
+        UserResponse user = userServiceRestClient.getUserById(id);
+        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",user);
     }
 
 
