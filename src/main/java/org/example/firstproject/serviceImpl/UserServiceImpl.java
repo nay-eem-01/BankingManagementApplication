@@ -2,6 +2,7 @@ package org.example.firstproject.serviceImpl;
 
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
@@ -9,6 +10,10 @@ import org.example.firstproject.repository.UserRepositoryCustom;
 import org.example.firstproject.security.PasswordEncoder;
 import org.example.firstproject.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -143,10 +148,17 @@ public class UserServiceImpl implements UserService {
         return userRepositoryCustom.findByName(name);
     }
 
+    @Override
+    public Page<User> getAllUserPaginated(PaginationArgs paginationArgs) {
 
+        Sort sortByOrder = paginationArgs.getSortOrder().equalsIgnoreCase("asc")
+                ? Sort.by(paginationArgs.getSortBy()).ascending()
+                : Sort.by(paginationArgs.getSortBy()).descending();
 
+        Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(),sortByOrder);
 
-
+        return userRepository.findAll(pageable);
+    }
 
 
 }

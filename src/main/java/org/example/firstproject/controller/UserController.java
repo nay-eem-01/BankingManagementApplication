@@ -4,22 +4,30 @@ import jakarta.validation.Valid;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.model.HttpResponse;
+import org.example.firstproject.model.PaginatedResponse;
+import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.service.UserService;
+import org.example.firstproject.utils.PaginationUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.example.firstproject.constatnt.AppConstants.*;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final PaginationUtil paginationUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PaginationUtil paginationUtil) {
         this.userService = userService;
+        this.paginationUtil = paginationUtil;
     }
 
     @PostMapping("/create-user")
@@ -102,6 +110,18 @@ public class UserController {
         List<User> users = userService.getUserByCriteria(keyword);
 
         return new ResponseEntity<>(users,HttpStatus.OK);
+    }
+
+    @GetMapping("/all-user")
+    public ResponseEntity<PaginatedResponse<User>> getAllUserPaginated(
+            @RequestParam(name = PAGE_NO) int pageNo,
+            @RequestParam(name = PAGE_SIZE) int pageSize,
+            @RequestParam(name = SORT_BY) String sortBy,
+            @RequestParam(name = SORT_ORDER) String sortOrder){
+
+        PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
+        Page<User> page = userService.getAllUserPaginated(paginationArgs);
+        return new ResponseEntity<>(paginationUtil.buildingPaginatedResponse(page),HttpStatus.OK);
     }
 
 

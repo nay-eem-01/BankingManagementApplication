@@ -2,8 +2,11 @@ package org.example.firstproject.service;
 
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -30,4 +33,6 @@ public interface UserService {
     List<User> getUserNameContains(String keyword);
 
     List<User> getUserByCriteria(String name);
+
+    Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 }

@@ -1,6 +1,7 @@
 package org.example.firstproject.repository;
 
 import org.example.firstproject.entity.User;
+import org.hibernate.query.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,6 +27,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findByNameEndingWith(String name);
 
     List<User> findByNameContains(String name);
+
 
 
 
