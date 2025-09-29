@@ -1,9 +1,11 @@
-package org.example.firstproject.model;
+package org.example.firstproject.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -36,7 +38,12 @@ public class HttpResponse {
     public static ResponseEntity<HttpResponse> getResponseEntity(HttpStatus httpStatus, String message) {
         return new ResponseEntity<>(new HttpResponse(httpStatus, message,null, httpStatus.equals(HttpStatus.OK) ), httpStatus);
 
+    }
+
+    public static ResponseEntity<HttpResponse> getResponseEntity(HttpStatus httpStatus, String message, List<Object> payload) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus, message,payload, httpStatus.equals(HttpStatus.OK) ), httpStatus);
 
     }
+
 
 }

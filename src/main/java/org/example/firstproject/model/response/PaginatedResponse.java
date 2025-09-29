@@ -1,4 +1,4 @@
-package org.example.firstproject.model;
+package org.example.firstproject.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
