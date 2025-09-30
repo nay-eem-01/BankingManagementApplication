@@ -139,5 +139,27 @@ public class UserController {
         return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",user);
     }
 
+    @GetMapping("/user-spec")
+    public ResponseEntity<HttpResponse> getUserNameStartsWithSpecification(@RequestParam String name,@RequestParam String email){
+        List<User> users = userService.users(name,email);
+        System.out.println(users);
+        return HttpResponse.getResponseEntity(HttpStatus.OK,"Success",users);
+
+    }
+
+    @GetMapping("/old-user")
+    public ResponseEntity<HttpResponse> getLongTimeUser(@RequestParam Long days){
+        List<User> userList = userService.olderUser(days);
+        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",userList);
+    }
+
+    @GetMapping("/valid-user")
+    public ResponseEntity<HttpResponse> validUser(@RequestParam Long days){
+        List<User> userList = userService.validUser(days);
+        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",userList);
+    }
+
+
+
 
 }

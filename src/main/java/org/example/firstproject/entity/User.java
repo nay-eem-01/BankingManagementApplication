@@ -15,11 +15,6 @@ import org.example.firstproject.model.AuditModel;
 @Setter
 @Table(name = AppTables.USER_NAME)
 public class User extends AuditModel<String> {
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-
     @NotBlank(message = "Name can't be blank")
     private String name;
     @NotBlank(message = "Password can't be blank")

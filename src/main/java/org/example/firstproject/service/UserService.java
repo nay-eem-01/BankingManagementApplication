@@ -6,12 +6,14 @@ import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserService {
-     void createNewUser(SignUpRequest signUpRequest);
+
+    void createNewUser(SignUpRequest signUpRequest);
 
     List<UserResponse> getAllUsers();
 
@@ -28,6 +30,7 @@ public interface UserService {
     List<String> getAllUniqueName();
 
     List<User> getUserNameStartsWith(String keyword);
+
     List<User> getUserNameEndsWith(String keyword);
 
     List<User> getUserNameContains(String keyword);
@@ -35,4 +38,11 @@ public interface UserService {
     List<User> getUserByCriteria(String name);
 
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
+
+    List<User> users(String name, String email);
+
+    List<User> olderUser(Long days);
+    List<User> validUser(Long days);
+
+
 }

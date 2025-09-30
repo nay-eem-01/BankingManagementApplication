@@ -7,34 +7,33 @@ import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
 import org.example.firstproject.repository.UserRepositoryCustom;
-import org.example.firstproject.security.PasswordEncoder;
 import org.example.firstproject.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.example.firstproject.specification.UserSpecification.*;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final UserRepositoryCustom userRepositoryCustom;
 
 
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper, UserRepositoryCustom userRepositoryCustom) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, UserRepositoryCustom userRepositoryCustom) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
         this.userRepositoryCustom = userRepositoryCustom;
     }
@@ -66,12 +65,11 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAllUsers() {
 
         List<User> allUsers = userRepository.findAll();
-        List<UserResponse> allUserResponse = allUsers
+        return allUsers
                 .stream()
                 .map(user ->
                         modelMapper.map(user, UserResponse.class))
                 .collect(Collectors.toList());
-        return allUserResponse;
     }
 
     @Override
@@ -82,16 +80,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserByEmail(String email) {
-
-
         User user = userRepository.findByEmail(email).orElse(null);
-
         return modelMapper.map(user, UserResponse.class);
     }
 
     @Override
     public List<UserResponse> getUserByUsername(String username) {
-        List<User>  users = userRepository.findDistinctByName(username);
+        List<User> users = userRepository.findDistinctByName(username);
         List<UserResponse> userResponses = users.stream()
                 .map(user ->
                         modelMapper.map(user, UserResponse.class))
@@ -107,11 +102,9 @@ public class UserServiceImpl implements UserService {
         if (userDto.getName() != null) {
             updatedUser.setName(userDto.getName());
         }
-
         if (userDto.getEmail() != null) {
             updatedUser.setEmail(userDto.getEmail());
         }
-
         return modelMapper.map(userRepository.save(updatedUser), UserDto.class);
     }
 
@@ -119,13 +112,11 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
         userRepository.delete(user);
-
     }
 
     @Override
     public List<String> getAllUniqueName() {
-        List<String> names = userRepository.findUniqueByName();
-        return names;
+        return userRepository.findUniqueByName();
     }
 
     @Override
@@ -155,9 +146,27 @@ public class UserServiceImpl implements UserService {
                 ? Sort.by(paginationArgs.getSortBy()).ascending()
                 : Sort.by(paginationArgs.getSortBy()).descending();
 
-        Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(),sortByOrder);
+        Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(), sortByOrder);
 
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<User> users(String name, String email) {
+        return userRepository.findAll
+                (Specification.allOf(hasName(name), hasEmail(), isNameStartsWith("n")));
+    }
+
+    @Override
+    public List<User> olderUser(Long days) {
+        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
+        return userRepository.findAll((userForLongTime(cutOffDate)));
+    }
+
+    @Override
+    public List<User> validUser(Long days) {
+        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
+        return userRepository.findAll(Specification.allOf(hasEmail(),userForLongTime(cutOffDate)));
     }
 
 
