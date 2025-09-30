@@ -117,10 +117,10 @@ public class UserController {
 
     @GetMapping("/all-user")
     public ResponseEntity<PaginatedResponse<User>> getAllUserPaginated(
-            @RequestParam(name = PAGE_NO) int pageNo,
-            @RequestParam(name = PAGE_SIZE) int pageSize,
-            @RequestParam(name = SORT_BY) String sortBy,
-            @RequestParam(name = SORT_ORDER) String sortOrder){
+            @RequestParam(name = PAGE_NO,defaultValue = "0") int pageNo,
+            @RequestParam(name = PAGE_SIZE,defaultValue = "10") int pageSize,
+            @RequestParam(name = SORT_BY,defaultValue = "id") String sortBy,
+            @RequestParam(name = SORT_ORDER,defaultValue = "asc") String sortOrder){
 
         PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
         Page<User> page = userService.getAllUserPaginated(paginationArgs);
