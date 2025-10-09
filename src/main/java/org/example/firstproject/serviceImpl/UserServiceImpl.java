@@ -1,5 +1,6 @@
 package org.example.firstproject.serviceImpl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.model.PaginationArgs;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.example.firstproject.specification.UserSpecification.*;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -48,16 +50,15 @@ public class UserServiceImpl implements UserService {
         String password = signUpRequest.getPassword();
 
         User signedInUser = new User();
-
-        System.out.println(username);
-        System.out.println(email);
-        System.out.println(password);
-
         signedInUser.setEmail(email);
         signedInUser.setName(username);
         signedInUser.setPassword(password);
 
+
         userRepository.save(signedInUser);
+
+        log.info("User created successfully:");
+
 
     }
 

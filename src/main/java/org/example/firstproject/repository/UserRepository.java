@@ -25,6 +25,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
      */
     Optional<User> findTopByEmail(String email);
 
+    Optional<User> findTopByName(String name);
+
     List<User> findDistinctByName(String name);
 
     List<User> findByNameStartingWith(String keyword);

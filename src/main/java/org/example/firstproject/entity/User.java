@@ -9,6 +9,8 @@ import lombok.*;
 import org.example.firstproject.constatnt.AppTables;
 import org.example.firstproject.model.AuditModel;
 
+import java.util.Set;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -23,6 +25,14 @@ public class User extends AuditModel<String> {
     @NotBlank
     @Email(message = "Invalid email format")
     private String email;
+
+    @ManyToMany(fetch =  FetchType.EAGER , cascade =  CascadeType.DETACH)
+    @JoinTable(
+            name = AppTables.USER_ROLE_NAME,
+            joinColumns = @JoinColumn(name = AppTables.UserTable.USER_ID),
+            inverseJoinColumns = @JoinColumn(name = AppTables.RoleTable.ROLE_ID)
+    )
+    private Set<Role> roles ;
 
 }
 
