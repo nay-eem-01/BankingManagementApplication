@@ -2,7 +2,6 @@ package org.example.firstproject.serviceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.firstproject.constatnt.AppConstants;
-import org.example.firstproject.constatnt.AppTables;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
@@ -12,8 +11,6 @@ import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.HttpResponse;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
-import org.example.firstproject.repository.UserRepositoryCustom;
-import org.example.firstproject.service.PrivilegeService;
 import org.example.firstproject.service.RoleService;
 import org.example.firstproject.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -21,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,37 +25,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.example.firstproject.specification.UserSpecification.*;
-
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
-
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
-    private final UserRepositoryCustom userRepositoryCustom;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final PrivilegeService privilegeService;
 
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, UserRepositoryCustom userRepositoryCustom, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RoleService roleService, PrivilegeService privilegeService) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RoleService roleService) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
-        this.userRepositoryCustom = userRepositoryCustom;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
-        this.privilegeService = privilegeService;
     }
 
 
@@ -113,12 +100,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getUserByUsername(String username) {
-        List<User> users = userRepository.findDistinctByName(username);
-        List<UserResponse> userResponses = users.stream()
+        List<User> users = userRepository.findAllByName(username);
+        return users.stream()
                 .map(user ->
                         modelMapper.map(user, UserResponse.class))
                 .collect(Collectors.toList());
-        return userResponses;
     }
 
     @Override
@@ -141,30 +127,6 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    @Override
-    public List<String> getAllUniqueName() {
-        return userRepository.findUniqueByName();
-    }
-
-    @Override
-    public List<User> getUserNameStartsWith(String keyword) {
-        return userRepository.findByNameStartingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameEndsWith(String keyword) {
-        return userRepository.findByNameEndingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameContains(String keyword) {
-        return userRepository.findByNameContains(keyword);
-    }
-
-    @Override
-    public List<User> getUserByCriteria(String name) {
-        return userRepositoryCustom.findByName(name);
-    }
 
     @Override
     public Page<User> getAllUserPaginated(PaginationArgs paginationArgs) {
@@ -178,23 +140,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
-    @Override
-    public List<User> users(String name, String email) {
-        return userRepository.findAll
-                (Specification.allOf(hasName(name), hasEmail(), isNameStartsWith("n")));
-    }
-
-    @Override
-    public List<User> olderUser(Long days) {
-        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-        return userRepository.findAll((userForLongTime(cutOffDate)));
-    }
-
-    @Override
-    public List<User> validUser(Long days) {
-        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-        return userRepository.findAll(Specification.allOf(hasEmail(), userForLongTime(cutOffDate)));
-    }
 
     @Override
     public HttpResponse login(SignInRequest loginRequest) {
@@ -206,6 +151,7 @@ public class UserServiceImpl implements UserService {
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("Current User: {}, Authorities: {}",authentication.getName(),authentication.getAuthorities());
 
         return new HttpResponse(HttpStatus.OK, "logged in", authentication, true);
     }

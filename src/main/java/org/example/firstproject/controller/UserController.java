@@ -25,20 +25,28 @@ import static org.example.firstproject.constatnt.AppConstants.*;
 public class UserController {
     private final UserService userService;
     private final PaginationUtil paginationUtil;
-    private final UserServiceRestClient userServiceRestClient;
 
-    public UserController(UserService userService, PaginationUtil paginationUtil, UserServiceRestClient userServiceRestClient) {
+    public UserController(UserService userService, PaginationUtil paginationUtil ) {
         this.userService = userService;
         this.paginationUtil = paginationUtil;
-        this.userServiceRestClient = userServiceRestClient;
     }
-
-    // Get users
 
     @GetMapping("/get-all-user")
     public ResponseEntity<List<UserResponse>> getAllUsers(){
         List<UserResponse> allUsers = userService.getAllUsers();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-user")
+    public ResponseEntity<PaginatedResponse<User>> getAllUserPaginated(
+            @RequestParam(name = PAGE_NO,defaultValue = "0") int pageNo,
+            @RequestParam(name = PAGE_SIZE,defaultValue = "10") int pageSize,
+            @RequestParam(name = SORT_BY,defaultValue = "id") String sortBy,
+            @RequestParam(name = SORT_ORDER,defaultValue = "asc") String sortOrder){
+
+        PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
+        Page<User> page = userService.getAllUserPaginated(paginationArgs);
+        return new ResponseEntity<>(paginationUtil.buildingPaginatedResponse(page),HttpStatus.OK);
     }
 
     @GetMapping("/get-user/{id}")
@@ -74,85 +82,6 @@ public class UserController {
         userService.deleteUser(id);
         return HttpResponse.getResponseEntity(true,"Deleted successfully");
     }
-
-    @GetMapping("/name-list")
-    public ResponseEntity<List<String>> getAllUniqueName(){
-        List<String> names = userService.getAllUniqueName();
-        return new ResponseEntity<>(names,HttpStatus.OK);
-    }
-
-    @GetMapping("/name-list/startsWith")
-    public ResponseEntity<List<User>> getUserNameStartsWith(@RequestParam String keyword){
-        List<User> users = userService.getUserNameStartsWith(keyword);
-
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
-    @GetMapping("/name-list/endsWith")
-    public ResponseEntity<List<User>> getUserNameEndsWith(@RequestParam String keyword){
-        List<User> users = userService.getUserNameEndsWith(keyword);
-
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
-    @GetMapping("/name-list/contains")
-    public ResponseEntity<List<User>> getUserNameContains(@RequestParam String keyword){
-        List<User> users = userService.getUserNameContains(keyword);
-
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
-    @GetMapping("/user/criteria")
-    public ResponseEntity<List<User>> getUserByCriteria(@RequestParam String keyword){
-        List<User> users = userService.getUserByCriteria(keyword);
-
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
-
-    @GetMapping("/all-user")
-    public ResponseEntity<PaginatedResponse<User>> getAllUserPaginated(
-            @RequestParam(name = PAGE_NO,defaultValue = "0") int pageNo,
-            @RequestParam(name = PAGE_SIZE,defaultValue = "10") int pageSize,
-            @RequestParam(name = SORT_BY,defaultValue = "id") String sortBy,
-            @RequestParam(name = SORT_ORDER,defaultValue = "asc") String sortOrder){
-
-        PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
-        Page<User> page = userService.getAllUserPaginated(paginationArgs);
-        return new ResponseEntity<>(paginationUtil.buildingPaginatedResponse(page),HttpStatus.OK);
-    }
-
-    @GetMapping("/user/ext")
-    public ResponseEntity<HttpResponse> getAllUserFromExternalAPI(){
-        List<UserResponse> users = userServiceRestClient.getAllUser();
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",users);
-    }
-
-    @GetMapping("/user/{id}")
-    public ResponseEntity<HttpResponse> getUserFromExternalAPI(@PathVariable Long id){
-        UserResponse user = userServiceRestClient.getUserById(id);
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",user);
-    }
-
-    @GetMapping("/user-spec")
-    public ResponseEntity<HttpResponse> getUserNameStartsWithSpecification(@RequestParam String name,@RequestParam String email){
-        List<User> users = userService.users(name,email);
-        System.out.println(users);
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"Success",users);
-
-    }
-
-    @GetMapping("/old-user")
-    public ResponseEntity<HttpResponse> getLongTimeUser(@RequestParam Long days){
-        List<User> userList = userService.olderUser(days);
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",userList);
-    }
-
-    @GetMapping("/valid-user")
-    public ResponseEntity<HttpResponse> validUser(@RequestParam Long days){
-        List<User> userList = userService.validUser(days);
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"User fetched successfully",userList);
-    }
-
 
 
 

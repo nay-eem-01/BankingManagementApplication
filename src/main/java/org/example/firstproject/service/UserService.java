@@ -29,23 +29,9 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    List<String> getAllUniqueName();
-
-    List<User> getUserNameStartsWith(String keyword);
-
-    List<User> getUserNameEndsWith(String keyword);
-
-    List<User> getUserNameContains(String keyword);
-
-    List<User> getUserByCriteria(String name);
-
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 
-    List<User> users(String name, String email);
-
-    List<User> olderUser(Long days);
-    List<User> validUser(Long days);
-
-
     HttpResponse login(SignInRequest loginRequest);
+
+
 }
