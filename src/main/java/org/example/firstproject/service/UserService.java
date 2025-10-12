@@ -3,7 +3,9 @@ package org.example.firstproject.service;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.model.PaginationArgs;
+import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
+import org.example.firstproject.model.response.HttpResponse;
 import org.example.firstproject.model.response.UserResponse;
 import org.springframework.data.domain.Page;
 
@@ -45,4 +47,5 @@ public interface UserService {
     List<User> validUser(Long days);
 
 
+    HttpResponse login(SignInRequest loginRequest);
 }

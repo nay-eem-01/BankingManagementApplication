@@ -13,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = AppTables.USER_NAME)
@@ -20,7 +21,7 @@ public class User extends AuditModel<String> {
     @NotBlank(message = "Name can't be blank")
     private String name;
     @NotBlank(message = "Password can't be blank")
-    @Size(min = 4, max = 8,message = "Password should be more than contain minimum 4 and maximum 8 characters")
+    @Size(min = 4,message = "Password should contain at least 4 character")
     private String password;
     @NotBlank
     @Email(message = "Invalid email format")

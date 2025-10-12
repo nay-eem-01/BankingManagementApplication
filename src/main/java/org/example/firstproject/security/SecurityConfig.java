@@ -49,8 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public").permitAll()
                         .requestMatchers("/api/auth/login","/api/auth/signup").permitAll()
-                        .requestMatchers("/api/auth/logout").authenticated())
-
+                        .requestMatchers("/api/auth/logout").authenticated()
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .maximumSessions(1))

@@ -33,12 +33,6 @@ public class UserController {
         this.userServiceRestClient = userServiceRestClient;
     }
 
-    @PostMapping("/create-user")
-    public ResponseEntity<HttpResponse> createUser(@Valid @RequestBody SignUpRequest signUpRequest){
-        userService.createNewUser(signUpRequest);
-        return HttpResponse.getResponseEntity(true,"User created successfully");
-    }
-
     // Get users
 
     @GetMapping("/get-all-user")

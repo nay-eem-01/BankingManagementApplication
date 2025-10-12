@@ -36,5 +36,7 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findByNameContains(String name);
 
 
+    Boolean existsUserByName(String name);
 
+    Boolean existsUserByEmail(String email);
 }
