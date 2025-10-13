@@ -2,6 +2,7 @@ package org.example.firstproject.constatnt;
 
 import org.springframework.context.annotation.Configuration;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 @Configuration
@@ -21,6 +22,8 @@ public class AppConstants {
     public static String consumerPermissionDesc = "User Generalized Permission";
 
     public static String JWT_TOKEN_TYPE = "Bearer";
+
+    public static BigDecimal DefaultBalance = BigDecimal.valueOf(0.0);
 
 
     public static HashMap<String, String> PERMISSIONS = new HashMap<>() {
