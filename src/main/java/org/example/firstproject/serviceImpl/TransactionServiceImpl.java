@@ -3,6 +3,7 @@ package org.example.firstproject.serviceImpl;
 import org.example.firstproject.entity.BankAccount;
 import org.example.firstproject.entity.Transactions;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
 import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.response.TransactionResponse;
 import org.example.firstproject.repository.BankAccountRepository;
@@ -42,7 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
         Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(), sort);
 
         User loggedInUser = authUtil.getLoggedInUser();
-        BankAccount bankAccount = bankAccountRepository.findByUserId(loggedInUser.getId()).orElseThrow(()-> new RuntimeException("User Not found"));
+        BankAccount bankAccount = bankAccountRepository.findByUserId(loggedInUser.getId()).orElseThrow(()-> new ResourceNotFoundException("User Not found"));
 
         Specification<Transactions> specification = TransactionSpecification.getAllTransactionFromThisAccount(bankAccount.getAccountNumber());
 

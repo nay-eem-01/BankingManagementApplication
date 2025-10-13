@@ -5,6 +5,8 @@ import org.example.firstproject.constatnt.AppConstants;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
+import org.example.firstproject.exceptionHandler.UserAlreadyExistsException;
 import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
@@ -58,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
         if (userExist!= null){
-            throw new RuntimeException("User already exist with this email");
+            throw new UserAlreadyExistsException("User already exist with this email");
         }
         String username = signUpRequest.getFullName();
         String email = signUpRequest.getEmail();
@@ -115,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
 
-        User updatedUser = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
+        User updatedUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
 
         if (userDto.getName() != null) {
             updatedUser.setFullName(userDto.getName());
@@ -128,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
         userRepository.delete(user);
     }
 
@@ -151,10 +153,10 @@ public class UserServiceImpl implements UserService {
 
         if (loginRequest == null) {
             log.debug("Log in request is empty");
-            throw new RuntimeException("Empty login request");
+            throw new ResourceNotFoundException("Empty credentials");
 
         }
-        User user = userRepository.findTopByEmail(loginRequest.getEmail()).orElseThrow(()-> new NoSuchElementException("No user found with this email"));
+        User user = userRepository.findTopByEmail(loginRequest.getEmail()).orElseThrow(()-> new ResourceNotFoundException("No user found with this email"));
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

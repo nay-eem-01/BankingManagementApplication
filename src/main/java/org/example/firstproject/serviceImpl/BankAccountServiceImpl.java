@@ -4,6 +4,9 @@ import org.example.firstproject.constatnt.AppConstants;
 import org.example.firstproject.entity.BankAccount;
 import org.example.firstproject.entity.Transactions;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.exceptionHandler.AccountAlreadyExistsExceptionHandler;
+import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
+import org.example.firstproject.exceptionHandler.TransactionExceptionHandler;
 import org.example.firstproject.model.request.BalanceTransferRequest;
 import org.example.firstproject.model.request.BankAccountRequest;
 import org.example.firstproject.model.response.BankAccountResponse;
@@ -42,7 +45,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     public BankAccountResponse createNewAccount() {
         User loggedInUser = authUtil.getLoggedInUser();
         if (bankAccountRepository.findByUserId(loggedInUser.getId()).isPresent()){
-            throw new RuntimeException("User already have account");
+            throw new AccountAlreadyExistsExceptionHandler("User already have account");
         }
 
         BankAccount bankAccount = new BankAccount();
@@ -64,7 +67,10 @@ public class BankAccountServiceImpl implements BankAccountService {
         BankAccount bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
 
         if (bankAccount.getUser() != loggedInUser) {
-            throw new RuntimeException("User mismatched");
+            throw new TransactionExceptionHandler("Account number does not matches");
+        }
+        if (bankAccountRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new TransactionExceptionHandler("Amount should be more than 0.00");
         }
         bankAccount.setBalance(bankAccount.getBalance().add(bankAccountRequest.getAmount()));
         return modelMapper.map(bankAccountRepository.save(bankAccount), BankAccountResponse.class);
@@ -75,7 +81,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     public TransactionResponse transferFund(BalanceTransferRequest balanceTransferRequest) {
 
         if (balanceTransferRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Amount should be more than 0.00");
+            throw new TransactionExceptionHandler("Amount should be more than 0.00");
         }
         User loggedInUser = authUtil.getLoggedInUser();
 
@@ -83,13 +89,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         BankAccount receiverAccount = bankAccountRepository.findByAccountNumber(toAccountNumber);
 
         if (!userRepository.existsUserByEmail(receiverAccount.getUser().getEmail())){
-            throw new RuntimeException("Receiver Account does not exist");
+            throw new ResourceNotFoundException("Receiver Account does not exist");
         }
 
         BankAccount senderAccount = bankAccountRepository
                 .findByUserId(loggedInUser.getId()).orElseThrow(()-> new RuntimeException("Sender account does not exist"));
         if (senderAccount.getBalance().compareTo(balanceTransferRequest.getAmount()) <0){
-            throw new RuntimeException("Insufficient balance");
+            throw new TransactionExceptionHandler("Insufficient balance");
         }
 
         receiverAccount.setBalance(receiverAccount.getBalance().add(balanceTransferRequest.getAmount()));
@@ -110,7 +116,7 @@ public class BankAccountServiceImpl implements BankAccountService {
     public BankAccountResponse viewBalance() {
         User loggedInUser = authUtil.getLoggedInUser();
         BankAccount bankAccount = bankAccountRepository
-                .findByUserId(loggedInUser.getId()).orElseThrow(()-> new RuntimeException("Sender account does not exist"));
+                .findByUserId(loggedInUser.getId()).orElseThrow(()-> new ResourceNotFoundException("Sender account does not exist"));
         return new BankAccountResponse(bankAccount.getAccountNumber(),bankAccount.getBalance());
     }
 

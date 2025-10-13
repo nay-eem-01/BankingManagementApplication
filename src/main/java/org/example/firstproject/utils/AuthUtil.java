@@ -2,6 +2,7 @@ package org.example.firstproject.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
 import org.example.firstproject.repository.UserRepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,6 @@ public class AuthUtil {
     public User getLoggedInUser (){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Email from authentication: {}",authentication.getName());
-        return userRepository.findTopByEmail(authentication.getName()).orElseThrow(()-> new RuntimeException("User not found"));
+        return userRepository.findTopByEmail(authentication.getName()).orElseThrow(()-> new ResourceNotFoundException("User not found"));
     }
 }
