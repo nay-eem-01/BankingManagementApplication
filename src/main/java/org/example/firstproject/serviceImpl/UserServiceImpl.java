@@ -8,9 +8,10 @@ import org.example.firstproject.entity.User;
 import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
-import org.example.firstproject.model.response.HttpResponse;
+import org.example.firstproject.model.response.LoginResponse;
 import org.example.firstproject.model.response.UserResponse;
 import org.example.firstproject.repository.UserRepository;
+import org.example.firstproject.security.jwt.JwtUtil;
 import org.example.firstproject.service.RoleService;
 import org.example.firstproject.service.UserService;
 import org.modelmapper.ModelMapper;
@@ -18,13 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -39,14 +40,16 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final JwtUtil jwtUtil;
 
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RoleService roleService, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -57,7 +60,7 @@ public class UserServiceImpl implements UserService {
         if (userExist!= null){
             throw new RuntimeException("User already exist with this email");
         }
-        String username = signUpRequest.getName();
+        String username = signUpRequest.getFullName();
         String email = signUpRequest.getEmail();
         String password = signUpRequest.getPassword();
 
@@ -66,7 +69,9 @@ public class UserServiceImpl implements UserService {
         signedInUser.setFullName(username);
         signedInUser.setPassword(passwordEncoder.encode(password));
 
-        Role role = roleService.findByRoleName(AppConstants.userRole);
+        Role role = roleService.findByRoleName("ROLE_USER");
+
+        log.info(role.toString());
 
         signedInUser.setRoles(Set.of(role));
 
@@ -98,26 +103,14 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserResponse.class);
     }
 
-<<<<<<< HEAD
-//    @Override
-//    public List<UserResponse> getUserByUsername(String username) {
-//        List<User> users = userRepository.findDistinctByName(username);
-//        List<UserResponse> userResponses = users.stream()
-//                .map(user ->
-//                        modelMapper.map(user, UserResponse.class))
-//                .collect(Collectors.toList());
-//        return userResponses;
-//    }
-=======
     @Override
     public List<UserResponse> getUserByUsername(String username) {
-        List<User> users = userRepository.findAllByName(username);
+        List<User> users = userRepository.findAllByFullName(username);
         return users.stream()
                 .map(user ->
                         modelMapper.map(user, UserResponse.class))
                 .collect(Collectors.toList());
     }
->>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
@@ -139,34 +132,6 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-<<<<<<< HEAD
-//    @Override
-//    public List<String> getAllUniqueName() {
-//        return userRepository.findUniqueByName();
-//    }
-//
-//    @Override
-//    public List<User> getUserNameStartsWith(String keyword) {
-//        return userRepository.findByNameStartingWith(keyword);
-//    }
-//
-//    @Override
-//    public List<User> getUserNameEndsWith(String keyword) {
-//        return userRepository.findByNameEndingWith(keyword);
-//    }
-//
-//    @Override
-//    public List<User> getUserNameContains(String keyword) {
-//        return userRepository.findByNameContains(keyword);
-//    }
-
-//    @Override
-//    public List<User> getUserByCriteria(String name) {
-//        return userRepositoryCustom.findByName(name);
-//    }
-=======
->>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
-
     @Override
     public Page<User> getAllUserPaginated(PaginationArgs paginationArgs) {
 
@@ -178,42 +143,27 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll(pageable);
     }
-<<<<<<< HEAD
-//
-//    @Override
-//    public List<User> users(String name, String email) {
-//        return userRepository.findAll
-//                (Specification.allOf(hasName(name), hasEmail(), isNameStartsWith("n")));
-//    }
-//
-//    @Override
-//    public List<User> olderUser(Long days) {
-//        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-//        return userRepository.findAll((userForLongTime(cutOffDate)));
-//    }
-//
-//    @Override
-//    public List<User> validUser(Long days) {
-//        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-//        return userRepository.findAll(Specification.allOf(hasEmail(), userForLongTime(cutOffDate)));
-//    }
-=======
-
->>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
 
     @Override
-    public HttpResponse login(SignInRequest loginRequest) {
+    public LoginResponse login(SignInRequest loginRequest) {
+
+
 
         if (loginRequest == null) {
             log.debug("Log in request is empty");
             throw new RuntimeException("Empty login request");
 
         }
+        User user = userRepository.findTopByEmail(loginRequest.getEmail()).orElseThrow(()-> new NoSuchElementException("No user found with this email"));
+        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         log.info("Current User: {}, Authorities: {}",authentication.getName(),authentication.getAuthorities());
 
-        return new HttpResponse(HttpStatus.OK, "logged in", authentication, true);
+        String jwt = jwtUtil.generateAccessToken(authentication);
+
+
+        return new LoginResponse(jwt,AppConstants.JWT_TOKEN_TYPE,userResponse);
     }
 
 

@@ -20,6 +20,8 @@ public class AppConstants {
     public static String consumerPermission = "USER";
     public static String consumerPermissionDesc = "User Generalized Permission";
 
+    public static String JWT_TOKEN_TYPE = "Bearer";
+
 
     public static HashMap<String, String> PERMISSIONS = new HashMap<>() {
         {

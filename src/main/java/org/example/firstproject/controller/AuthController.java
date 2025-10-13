@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.HttpResponse;
+import org.example.firstproject.model.response.LoginResponse;
 import org.example.firstproject.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<HttpResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest){
-        HttpResponse loginResponse =  userService.login(loginRequest);
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"You are now logged in",loginResponse);
+    public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest){
+        LoginResponse loginResponse =  userService.login(loginRequest);
+        return new ResponseEntity<>(loginResponse,HttpStatus.OK);
     }
 
     @PostMapping("/signup")

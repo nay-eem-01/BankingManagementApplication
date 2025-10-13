@@ -6,6 +6,7 @@ import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
 import org.example.firstproject.model.response.HttpResponse;
+import org.example.firstproject.model.response.LoginResponse;
 import org.example.firstproject.model.response.UserResponse;
 import org.springframework.data.domain.Page;
 
@@ -22,37 +23,17 @@ public interface UserService {
     UserResponse getUser(Long id);
 
     UserResponse getUserByEmail(String email);
-
-//    List<UserResponse> getUserByUsername(String username);
+    List<UserResponse> getUserByUsername(String username);
 
     UserDto updateUser(Long id, UserDto userDto);
 
     void deleteUser(Long id);
 
-<<<<<<< HEAD
-//    List<String> getAllUniqueName();
 
-//    List<User> getUserNameStartsWith(String keyword);
-
-//    List<User> getUserNameEndsWith(String keyword);
-
-//    List<User> getUserNameContains(String keyword);
-
-//    List<User> getUserByCriteria(String name);
 
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 
-//    List<User> users(String name, String email);
-
-//    List<User> olderUser(Long days);
-//    List<User> validUser(Long days);
-
-
-=======
-    Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
-
->>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
-    HttpResponse login(SignInRequest loginRequest);
+    LoginResponse login(SignInRequest loginRequest);
 
 
 }

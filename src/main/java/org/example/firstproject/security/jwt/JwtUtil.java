@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.example.firstproject.security.service.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -51,11 +52,12 @@ public class JwtUtil {
         }
     }
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(Authentication authentication) {
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         Map<String,Object> claims = new HashMap<>();
         claims.put("type","access");
-        System.out.println("This is first - access token");
-        return generateToken(claims, username,jwtExpiration);
+        return generateToken(claims, customUserDetails.getUsername(), jwtExpiration);
     }
 
     public String generateRefreshToken(String username) {

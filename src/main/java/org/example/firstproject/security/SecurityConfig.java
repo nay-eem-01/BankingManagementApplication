@@ -58,8 +58,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .maximumSessions(1))
-                .httpBasic(Customizer.withDefaults());
+                        .maximumSessions(1));
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);

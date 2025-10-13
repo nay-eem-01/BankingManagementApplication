@@ -9,9 +9,9 @@ import lombok.Data;
 public class SignUpRequest {
 
     @NotBlank(message = "Name can't be blank")
-    private String name;
+    private String fullName;
     @NotBlank(message = "Password can't be blank")
-    @Size(min = 4, max = 8,message = "Password should be more than contain minimum 4 and maximum 8 characters")
+    @Size(min = 4,message = "Password should  contain minimum 4 characters")
     private String password;
     @NotBlank
     @Email(message = "Invalid email format")

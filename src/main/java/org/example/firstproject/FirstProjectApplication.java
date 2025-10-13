@@ -1,7 +1,5 @@
 package org.example.firstproject;
 
-import org.example.firstproject.constatnt.AppConstants;
-import org.example.firstproject.constatnt.AppTables;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.enums.RoleType;
@@ -13,10 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashSet;
 import java.util.Set;
-
-import static org.example.firstproject.constatnt.AppConstants.userRole;
 
 @SpringBootApplication
 public class FirstProjectApplication {
