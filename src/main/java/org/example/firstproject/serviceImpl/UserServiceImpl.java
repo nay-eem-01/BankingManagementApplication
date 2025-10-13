@@ -2,7 +2,6 @@ package org.example.firstproject.serviceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.firstproject.constatnt.AppConstants;
-import org.example.firstproject.constatnt.AppTables;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
@@ -76,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
         User signedInUser = new User();
         signedInUser.setEmail(email);
-        signedInUser.setName(username);
+        signedInUser.setFullName(username);
         signedInUser.setPassword(passwordEncoder.encode(password));
 
         Role role = roleService.findByRoleName(AppConstants.userRole);
@@ -111,15 +110,15 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(user, UserResponse.class);
     }
 
-    @Override
-    public List<UserResponse> getUserByUsername(String username) {
-        List<User> users = userRepository.findDistinctByName(username);
-        List<UserResponse> userResponses = users.stream()
-                .map(user ->
-                        modelMapper.map(user, UserResponse.class))
-                .collect(Collectors.toList());
-        return userResponses;
-    }
+//    @Override
+//    public List<UserResponse> getUserByUsername(String username) {
+//        List<User> users = userRepository.findDistinctByName(username);
+//        List<UserResponse> userResponses = users.stream()
+//                .map(user ->
+//                        modelMapper.map(user, UserResponse.class))
+//                .collect(Collectors.toList());
+//        return userResponses;
+//    }
 
     @Override
     public UserDto updateUser(Long id, UserDto userDto) {
@@ -127,7 +126,7 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exist"));
 
         if (userDto.getName() != null) {
-            updatedUser.setName(userDto.getName());
+            updatedUser.setFullName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
             updatedUser.setEmail(userDto.getEmail());
@@ -141,30 +140,30 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    @Override
-    public List<String> getAllUniqueName() {
-        return userRepository.findUniqueByName();
-    }
+//    @Override
+//    public List<String> getAllUniqueName() {
+//        return userRepository.findUniqueByName();
+//    }
+//
+//    @Override
+//    public List<User> getUserNameStartsWith(String keyword) {
+//        return userRepository.findByNameStartingWith(keyword);
+//    }
+//
+//    @Override
+//    public List<User> getUserNameEndsWith(String keyword) {
+//        return userRepository.findByNameEndingWith(keyword);
+//    }
+//
+//    @Override
+//    public List<User> getUserNameContains(String keyword) {
+//        return userRepository.findByNameContains(keyword);
+//    }
 
-    @Override
-    public List<User> getUserNameStartsWith(String keyword) {
-        return userRepository.findByNameStartingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameEndsWith(String keyword) {
-        return userRepository.findByNameEndingWith(keyword);
-    }
-
-    @Override
-    public List<User> getUserNameContains(String keyword) {
-        return userRepository.findByNameContains(keyword);
-    }
-
-    @Override
-    public List<User> getUserByCriteria(String name) {
-        return userRepositoryCustom.findByName(name);
-    }
+//    @Override
+//    public List<User> getUserByCriteria(String name) {
+//        return userRepositoryCustom.findByName(name);
+//    }
 
     @Override
     public Page<User> getAllUserPaginated(PaginationArgs paginationArgs) {
@@ -177,24 +176,24 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll(pageable);
     }
-
-    @Override
-    public List<User> users(String name, String email) {
-        return userRepository.findAll
-                (Specification.allOf(hasName(name), hasEmail(), isNameStartsWith("n")));
-    }
-
-    @Override
-    public List<User> olderUser(Long days) {
-        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-        return userRepository.findAll((userForLongTime(cutOffDate)));
-    }
-
-    @Override
-    public List<User> validUser(Long days) {
-        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
-        return userRepository.findAll(Specification.allOf(hasEmail(), userForLongTime(cutOffDate)));
-    }
+//
+//    @Override
+//    public List<User> users(String name, String email) {
+//        return userRepository.findAll
+//                (Specification.allOf(hasName(name), hasEmail(), isNameStartsWith("n")));
+//    }
+//
+//    @Override
+//    public List<User> olderUser(Long days) {
+//        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
+//        return userRepository.findAll((userForLongTime(cutOffDate)));
+//    }
+//
+//    @Override
+//    public List<User> validUser(Long days) {
+//        LocalDateTime cutOffDate = LocalDateTime.now().minusDays(days);
+//        return userRepository.findAll(Specification.allOf(hasEmail(), userForLongTime(cutOffDate)));
+//    }
 
     @Override
     public HttpResponse login(SignInRequest loginRequest) {

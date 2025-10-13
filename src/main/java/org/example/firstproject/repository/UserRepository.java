@@ -4,39 +4,41 @@ import org.example.firstproject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    /** Writing custom query as JPQL
+    /**
+     * Writing custom query as JPQL
      */
     @Query("select u from User u where u.email = ?1")
     Optional<User> findByEmail(String email);
 
-    @Query("select  u from User u where u.name = ?1")
-    Optional<User> findByName(String name);
-
-    @Query("select distinct u.name from User u order by u.name desc limit 05")
-    List<String> findUniqueByName();
-
-    /**
-     * Built in query JPA provides
-     */
+    //    @Query("select  u from User u where u.fullName = ?1")
+//    Optional<User> findByName(String name);
+//
+//    @Query("select distinct u.fullName from User u order by u.fullName desc limit 05")
+//    List<String> findUniqueByName();
+//
+//    /**
+//     * Built in query JPA provides
+//     */
     Optional<User> findTopByEmail(String email);
-
-    Optional<User> findTopByName(String name);
-
-    List<User> findDistinctByName(String name);
-
-    List<User> findByNameStartingWith(String keyword);
-
-    List<User> findByNameEndingWith(String name);
-
-    List<User> findByNameContains(String name);
-
-
-    Boolean existsUserByName(String name);
+//
+//    Optional<User> findTopByName(String name);
+//
+//    List<User> findDistinctByName(String name);
+//
+//    List<User> findByNameStartingWith(String keyword);
+//
+//    List<User> findByNameEndingWith(String name);
+//
+//    List<User> findByNameContains(String name);
+//
+//
+//    Boolean existsUserByName(String name);
 
     Boolean existsUserByEmail(String email);
 }

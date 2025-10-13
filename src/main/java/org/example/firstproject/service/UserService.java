@@ -23,28 +23,28 @@ public interface UserService {
 
     UserResponse getUserByEmail(String email);
 
-    List<UserResponse> getUserByUsername(String username);
+//    List<UserResponse> getUserByUsername(String username);
 
     UserDto updateUser(Long id, UserDto userDto);
 
     void deleteUser(Long id);
 
-    List<String> getAllUniqueName();
+//    List<String> getAllUniqueName();
 
-    List<User> getUserNameStartsWith(String keyword);
+//    List<User> getUserNameStartsWith(String keyword);
 
-    List<User> getUserNameEndsWith(String keyword);
+//    List<User> getUserNameEndsWith(String keyword);
 
-    List<User> getUserNameContains(String keyword);
+//    List<User> getUserNameContains(String keyword);
 
-    List<User> getUserByCriteria(String name);
+//    List<User> getUserByCriteria(String name);
 
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 
-    List<User> users(String name, String email);
+//    List<User> users(String name, String email);
 
-    List<User> olderUser(Long days);
-    List<User> validUser(Long days);
+//    List<User> olderUser(Long days);
+//    List<User> validUser(Long days);
 
 
     HttpResponse login(SignInRequest loginRequest);

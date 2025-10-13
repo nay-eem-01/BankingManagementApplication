@@ -1,7 +1,6 @@
 package org.example.firstproject.security.service;
 
 import lombok.*;
-import org.example.firstproject.entity.Privilege;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,7 +34,7 @@ public class CustomUserDetails implements UserDetails {
 
         return new CustomUserDetails(
                 user.getId(),
-                user.getName(),
+                user.getFullName(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoles(),
