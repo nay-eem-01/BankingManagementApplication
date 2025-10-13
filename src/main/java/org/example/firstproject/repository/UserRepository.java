@@ -3,13 +3,18 @@ package org.example.firstproject.repository;
 import org.example.firstproject.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+<<<<<<< HEAD
 import org.springframework.data.jpa.repository.Query;
+=======
+import org.springframework.stereotype.Repository;
+>>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
+<<<<<<< HEAD
     /**
      * Writing custom query as JPQL
      */
@@ -40,5 +45,13 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 //
 //    Boolean existsUserByName(String name);
 
+=======
+    Optional<User> findByEmail(String email);
+    Boolean existsUserByName(String name);
+>>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
     Boolean existsUserByEmail(String email);
+    Optional<User> findTopByEmail(String email);
+    List<User> findAllByName(String name);
+
+
 }

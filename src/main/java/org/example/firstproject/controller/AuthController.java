@@ -24,7 +24,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest){
         HttpResponse loginResponse =  userService.login(loginRequest);
-        System.out.println(loginResponse);
         return HttpResponse.getResponseEntity(HttpStatus.OK,"You are now logged in",loginResponse);
     }
 

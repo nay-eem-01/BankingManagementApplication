@@ -29,6 +29,7 @@ public interface UserService {
 
     void deleteUser(Long id);
 
+<<<<<<< HEAD
 //    List<String> getAllUniqueName();
 
 //    List<User> getUserNameStartsWith(String keyword);
@@ -47,5 +48,11 @@ public interface UserService {
 //    List<User> validUser(Long days);
 
 
+=======
+    Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
+
+>>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
     HttpResponse login(SignInRequest loginRequest);
+
+
 }

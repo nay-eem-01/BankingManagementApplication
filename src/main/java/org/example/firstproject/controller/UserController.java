@@ -25,20 +25,28 @@ import static org.example.firstproject.constatnt.AppConstants.*;
 public class UserController {
     private final UserService userService;
     private final PaginationUtil paginationUtil;
-    private final UserServiceRestClient userServiceRestClient;
 
-    public UserController(UserService userService, PaginationUtil paginationUtil, UserServiceRestClient userServiceRestClient) {
+    public UserController(UserService userService, PaginationUtil paginationUtil ) {
         this.userService = userService;
         this.paginationUtil = paginationUtil;
-        this.userServiceRestClient = userServiceRestClient;
     }
-
-    // Get users
 
     @GetMapping("/get-all-user")
     public ResponseEntity<List<UserResponse>> getAllUsers(){
         List<UserResponse> allUsers = userService.getAllUsers();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-user")
+    public ResponseEntity<PaginatedResponse<User>> getAllUserPaginated(
+            @RequestParam(name = PAGE_NO,defaultValue = "0") int pageNo,
+            @RequestParam(name = PAGE_SIZE,defaultValue = "10") int pageSize,
+            @RequestParam(name = SORT_BY,defaultValue = "id") String sortBy,
+            @RequestParam(name = SORT_ORDER,defaultValue = "asc") String sortOrder){
+
+        PaginationArgs paginationArgs = new PaginationArgs(pageNo,pageSize,sortBy,sortOrder);
+        Page<User> page = userService.getAllUserPaginated(paginationArgs);
+        return new ResponseEntity<>(paginationUtil.buildingPaginatedResponse(page),HttpStatus.OK);
     }
 
     @GetMapping("/get-user/{id}")
@@ -75,6 +83,7 @@ public class UserController {
         return HttpResponse.getResponseEntity(true,"Deleted successfully");
     }
 
+<<<<<<< HEAD
 //    @GetMapping("/name-list")
 //    public ResponseEntity<List<String>> getAllUniqueName(){
 //        List<String> names = userService.getAllUniqueName();
@@ -154,6 +163,8 @@ public class UserController {
 //    }
 
 
+=======
+>>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
 
 
 }

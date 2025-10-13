@@ -77,7 +77,10 @@
             <scope>test</scope>
         </dependency>
 
+<<<<<<< HEAD
         <!-- Use latest JJWT version -->
+=======
+>>>>>>> 2770a449220a5bedcb03c60cf65740d9a126deaa
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
