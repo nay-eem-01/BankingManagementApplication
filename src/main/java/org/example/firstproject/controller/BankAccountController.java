@@ -43,6 +43,6 @@ public class BankAccountController {
     @GetMapping("/balance")
     public ResponseEntity<HttpResponse> viewBalance() {
         BankAccountResponse bankAccountResponse = bankAccountService.viewBalance();
-        return HttpResponse.getResponseEntity(HttpStatus.OK, bankAccountResponse);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, "Remaining balance", bankAccountResponse, true);
     }
 }

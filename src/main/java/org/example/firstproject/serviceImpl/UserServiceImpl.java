@@ -97,13 +97,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUser(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserResponse.class);
     }
 
     @Override
     public UserResponse getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return modelMapper.map(user, UserResponse.class);
     }
 
@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
 
             log.error("Unexpected authentication exception for email - {}: {}", loginRequest.getEmail(), exception.getMessage());
             log.debug("Authentication Exception: ", exception);
-            
+
             throw new AuthenticationExceptionImpl("Unknown authentication exception occurred");
         }
 

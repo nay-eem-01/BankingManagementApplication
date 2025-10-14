@@ -1,6 +1,7 @@
 package org.example.firstproject.exceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.firstproject.model.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,130 +22,104 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExists(UserAlreadyExistsException ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleUserAlreadyExists(UserAlreadyExistsException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                ex.getMessage(),
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.CONFLICT,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
     @ExceptionHandler(AccountAlreadyExistsExceptionHandler.class)
-    public ResponseEntity<Map<String, Object>> handleAccountAlreadyExists(AccountAlreadyExistsExceptionHandler ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleAccountAlreadyExists(AccountAlreadyExistsExceptionHandler ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                ex.getMessage(),
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.CONFLICT,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
+
 
     @ExceptionHandler(AuthenticationExceptionImpl.class)
-    public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                ex.getMessage(),
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.UNAUTHORIZED,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                ex.getMessage(),
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<HttpResponse> handleResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.NOT_FOUND,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleUserNotFound(UsernameNotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleUserNotFound(UsernameNotFoundException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                ex.getMessage(),
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.NOT_FOUND,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
     @ExceptionHandler(TransactionExceptionHandler.class)
-    public ResponseEntity<Map<String, Object>> handleTransactionException(TransactionExceptionHandler ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleTransactionException(TransactionExceptionHandler ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
+        return HttpResponse.getResponseEntityForError(
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
-                HttpStatus.CONFLICT,
-                request.getRequestURI()
-        );
+                null);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, Object>> handleBadCredentials(
+    public ResponseEntity<HttpResponse> handleBadCredentials(
             BadCredentialsException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                "Invalid username or password",
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.UNAUTHORIZED,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Map<String, Object>> handleAccessDenied(
+    public ResponseEntity<HttpResponse> handleAccessDenied(
             AccessDeniedException ex, HttpServletRequest request) {
 
-        return buildErrorResponse(
-                "You do not have permission to perform this action",
-                HttpStatus.FORBIDDEN,
-                request.getRequestURI()
-        );
+        return HttpResponse.getResponseEntityForError(
+                HttpStatus.UNAUTHORIZED,
+                "You do not have permission",
+                ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationErrors(
+    public ResponseEntity<HttpResponse> handleValidationErrors(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
 
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
                 .forEach(error -> fieldErrors.put(error.getField(), error.getDefaultMessage()));
 
-        return buildErrorResponse(
-                "Validation failed",
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.BAD_REQUEST,
-                request.getRequestURI(),
+                ex.getMessage(),
                 fieldErrors
         );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<HttpResponse> handleGenericException(Exception ex, HttpServletRequest request) {
         logger.error("Unexpected error occurred", ex);
-        return buildErrorResponse(
-                "An unexpected error occurred",
+        return HttpResponse.getResponseEntityForError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                request.getRequestURI()
-        );
+                ex.getMessage(),
+                null);
     }
 
-    private ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status, String path) {
-        return buildErrorResponse(message, status, path, null);
-    }
-
-    private ResponseEntity<Map<String, Object>> buildErrorResponse(String message, HttpStatus status, String path, Map<String, String> errors) {
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", message);
-        response.put("status", status);
-        response.put("error", status.getReasonPhrase());
-        response.put("timestamp", java.time.LocalDateTime.now());
-        response.put("path", path);
-        if (errors != null) {
-            response.put("errors", errors);
-        }
-
-        return new ResponseEntity<>(response, status);
-    }
 
 }

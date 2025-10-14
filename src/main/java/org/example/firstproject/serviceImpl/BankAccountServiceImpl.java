@@ -44,13 +44,13 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccountResponse createNewAccount() {
         User loggedInUser = authUtil.getLoggedInUser();
-        if (bankAccountRepository.findByUserId(loggedInUser.getId()).isPresent()){
+        if (bankAccountRepository.findByUserId(loggedInUser.getId()).isPresent()) {
             throw new AccountAlreadyExistsExceptionHandler("User already have account");
         }
 
         BankAccount bankAccount = new BankAccount();
         String userId = loggedInUser.getId().toString();
-        String accountNumber = "ACC" + userId.substring(0,3);
+        String accountNumber = "ACC" + userId.substring(0, 3);
         bankAccount.setAccountNumber(accountNumber);
         bankAccount.setBalance(AppConstants.DefaultBalance);
         bankAccount.setUser(loggedInUser);
@@ -88,13 +88,13 @@ public class BankAccountServiceImpl implements BankAccountService {
         String toAccountNumber = balanceTransferRequest.getToAccountNumber();
         BankAccount receiverAccount = bankAccountRepository.findByAccountNumber(toAccountNumber);
 
-        if (!userRepository.existsUserByEmail(receiverAccount.getUser().getEmail())){
+        if (!userRepository.existsUserByEmail(receiverAccount.getUser().getEmail())) {
             throw new ResourceNotFoundException("Receiver Account does not exist");
         }
 
         BankAccount senderAccount = bankAccountRepository
-                .findByUserId(loggedInUser.getId()).orElseThrow(()-> new RuntimeException("Sender account does not exist"));
-        if (senderAccount.getBalance().compareTo(balanceTransferRequest.getAmount()) <0){
+                .findByUserId(loggedInUser.getId()).orElseThrow(() -> new RuntimeException("Sender account does not exist"));
+        if (senderAccount.getBalance().compareTo(balanceTransferRequest.getAmount()) < 0) {
             throw new TransactionExceptionHandler("Insufficient balance");
         }
 
@@ -109,15 +109,15 @@ public class BankAccountServiceImpl implements BankAccountService {
         transactions.setFromAccountNumber(senderAccount.getAccountNumber());
         transactions.setAmount(balanceTransferRequest.getAmount());
 
-        return modelMapper.map(transactionRepository.save(transactions),TransactionResponse.class);
+        return modelMapper.map(transactionRepository.save(transactions), TransactionResponse.class);
     }
 
     @Override
     public BankAccountResponse viewBalance() {
         User loggedInUser = authUtil.getLoggedInUser();
         BankAccount bankAccount = bankAccountRepository
-                .findByUserId(loggedInUser.getId()).orElseThrow(()-> new ResourceNotFoundException("Sender account does not exist"));
-        return new BankAccountResponse(bankAccount.getAccountNumber(),bankAccount.getBalance());
+                .findByUserId(loggedInUser.getId()).orElseThrow(() -> new ResourceNotFoundException("Sender account does not exist"));
+        return new BankAccountResponse(bankAccount.getAccountNumber(), bankAccount.getBalance());
     }
 
 
