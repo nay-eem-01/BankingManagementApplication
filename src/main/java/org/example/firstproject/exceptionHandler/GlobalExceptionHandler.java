@@ -5,13 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +40,12 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(AuthenticationExceptionHandler.class)
-    public ResponseEntity<Map<String, Object>> handleAccountAlreadyExists(AuthenticationExceptionHandler ex, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationExceptionImpl.class)
+    public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
 
         return buildErrorResponse(
                 ex.getMessage(),
-                HttpStatus.CONFLICT,
+                HttpStatus.UNAUTHORIZED,
                 request.getRequestURI()
         );
     }
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
 
         return buildErrorResponse(
                 ex.getMessage(),
-                HttpStatus.CONFLICT,
+                HttpStatus.NOT_FOUND,
                 request.getRequestURI()
         );
     }
@@ -116,6 +117,7 @@ public class GlobalExceptionHandler {
                 fieldErrors
         );
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex, HttpServletRequest request) {
         logger.error("Unexpected error occurred", ex);
@@ -134,7 +136,7 @@ public class GlobalExceptionHandler {
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
-        response.put("status", status.value());
+        response.put("status", status);
         response.put("error", status.getReasonPhrase());
         response.put("timestamp", java.time.LocalDateTime.now());
         response.put("path", path);

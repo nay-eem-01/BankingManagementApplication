@@ -5,13 +5,10 @@ import org.example.firstproject.entity.User;
 import org.example.firstproject.model.PaginationArgs;
 import org.example.firstproject.model.request.SignInRequest;
 import org.example.firstproject.model.request.SignUpRequest;
-import org.example.firstproject.model.response.HttpResponse;
 import org.example.firstproject.model.response.LoginResponse;
 import org.example.firstproject.model.response.UserResponse;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserService {
@@ -23,13 +20,12 @@ public interface UserService {
     UserResponse getUser(Long id);
 
     UserResponse getUserByEmail(String email);
+
     List<UserResponse> getUserByUsername(String username);
 
     UserDto updateUser(Long id, UserDto userDto);
 
     void deleteUser(Long id);
-
-
 
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 

@@ -23,25 +23,26 @@ public class BankAccountController {
     }
 
     @PostMapping("/init")
-    public ResponseEntity<BankAccountResponse> CreateAccount(){
+    public ResponseEntity<HttpResponse> CreateAccount() {
         BankAccountResponse bankAccountResponse = bankAccountService.createNewAccount();
-        return new ResponseEntity<>(bankAccountResponse, HttpStatus.CREATED);
+        return HttpResponse.getResponseEntity(HttpStatus.CREATED, "Account created successfully", bankAccountResponse, true);
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<BankAccountResponse> deposit(@RequestBody BankAccountRequest bankAccountRequest) {
+    public ResponseEntity<HttpResponse> deposit(@RequestBody BankAccountRequest bankAccountRequest) {
         BankAccountResponse bankAccountResponse = bankAccountService.deposit(bankAccountRequest);
-        return new ResponseEntity<>(bankAccountResponse, HttpStatus.OK);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, "Successfully deposited", bankAccountResponse, true);
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<TransactionResponse> transferFund(@RequestBody BalanceTransferRequest balanceTransferRequest){
+    public ResponseEntity<HttpResponse> transferFund(@RequestBody BalanceTransferRequest balanceTransferRequest) {
         TransactionResponse transactionResponse = bankAccountService.transferFund(balanceTransferRequest);
-        return new ResponseEntity<>(transactionResponse,HttpStatus.OK);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, "Balance transferred successfully", transactionResponse, true);
     }
+
     @GetMapping("/balance")
-    public ResponseEntity<BankAccountResponse> viewBalance(){
+    public ResponseEntity<HttpResponse> viewBalance() {
         BankAccountResponse bankAccountResponse = bankAccountService.viewBalance();
-        return new ResponseEntity<>(bankAccountResponse,HttpStatus.OK);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, bankAccountResponse);
     }
 }

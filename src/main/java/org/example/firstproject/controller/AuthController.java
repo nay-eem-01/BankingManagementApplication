@@ -23,15 +23,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest){
-        LoginResponse loginResponse =  userService.login(loginRequest);
-        return new ResponseEntity<>(loginResponse,HttpStatus.OK);
+    public ResponseEntity<HttpResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, "User logged in successfully", loginResponse, true);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<HttpResponse> createUser(@Valid @RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<HttpResponse> createUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         userService.createNewUser(signUpRequest);
-        return HttpResponse.getResponseEntity(true,"User created successfully");
+        return HttpResponse.getResponseEntity(HttpStatus.CREATED, "User created successfully", true);
     }
 
 

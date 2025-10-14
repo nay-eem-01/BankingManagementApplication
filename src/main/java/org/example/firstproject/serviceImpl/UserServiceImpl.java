@@ -5,6 +5,7 @@ import org.example.firstproject.constatnt.AppConstants;
 import org.example.firstproject.dto.UserDto;
 import org.example.firstproject.entity.Role;
 import org.example.firstproject.entity.User;
+import org.example.firstproject.exceptionHandler.AuthenticationExceptionImpl;
 import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
 import org.example.firstproject.exceptionHandler.UserAlreadyExistsException;
 import org.example.firstproject.model.PaginationArgs;
@@ -22,14 +23,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public void createNewUser(SignUpRequest signUpRequest) {
 
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
-        if (userExist!= null){
+        if (userExist != null) {
             throw new UserAlreadyExistsException("User already exist with this email");
         }
         String username = signUpRequest.getFullName();
@@ -149,23 +151,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(SignInRequest loginRequest) {
 
-
-
         if (loginRequest == null) {
             log.debug("Log in request is empty");
             throw new ResourceNotFoundException("Empty credentials");
-
         }
-        User user = userRepository.findTopByEmail(loginRequest.getEmail()).orElseThrow(()-> new ResourceNotFoundException("No user found with this email"));
+
+        User user = userRepository.findTopByEmail(loginRequest.getEmail()).orElseThrow(() -> new ResourceNotFoundException("No user found with this email"));
+
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        Authentication authentication;
+
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            log.info("Authentication successful for: {}, Authorities: {}", authentication.getName(), authentication.getAuthorities());
+
+        } catch (BadCredentialsException exception) {
+
+            log.warn("Authentication failed: Invalid credentials for email - {}", loginRequest.getEmail());
+            log.debug("Authentication Exception: ", exception);
+
+            throw new BadCredentialsException("Invalid email or password");
+
+        } catch (AuthenticationException exception) {
+
+            log.error("Unexpected authentication exception for email - {}: {}", loginRequest.getEmail(), exception.getMessage());
+            log.debug("Authentication Exception: ", exception);
+            
+            throw new AuthenticationExceptionImpl("Unknown authentication exception occurred");
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        log.info("Current User: {}, Authorities: {}",authentication.getName(),authentication.getAuthorities());
 
         String jwt = jwtUtil.generateAccessToken(authentication);
-
-
-        return new LoginResponse(jwt,AppConstants.JWT_TOKEN_TYPE,userResponse);
+        return new LoginResponse(jwt, AppConstants.JWT_TOKEN_TYPE, userResponse);
     }
 
 

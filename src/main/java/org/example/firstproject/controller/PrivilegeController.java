@@ -23,8 +23,8 @@ public class PrivilegeController {
     }
 
     @GetMapping("/get-privileges")
-    public ResponseEntity<HttpResponse> getALlPrivilege(){
+    public ResponseEntity<HttpResponse> getALlPrivilege() {
         List<Privilege> privileges = privilegeService.getAllPrivilege();
-        return HttpResponse.getResponseEntity(HttpStatus.OK,"Data loaded successfully",privileges);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, privileges);
     }
 }

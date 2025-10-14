@@ -1,5 +1,8 @@
 package org.example.firstproject.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.example.firstproject.model.AuditorAwareImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +25,14 @@ public class AppConfig {
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES, true);
+        return objectMapper;
     }
 
     @Bean

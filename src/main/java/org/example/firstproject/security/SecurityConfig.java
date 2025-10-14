@@ -1,5 +1,7 @@
 package org.example.firstproject.security;
 
+import org.example.firstproject.constatnt.SecurityConstants;
+import org.example.firstproject.exceptionHandler.AuthenticationExceptionHandler;
 import org.example.firstproject.security.jwt.JwtAuthenticationFilter;
 import org.example.firstproject.security.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +25,12 @@ public class SecurityConfig {
 
     private  final CustomUserDetailService customUserDetailService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationExceptionHandler authenticationExceptionHandler;
 
-    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(CustomUserDetailService customUserDetailService, JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationExceptionHandler authenticationExceptionHandler) {
         this.customUserDetailService = customUserDetailService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.authenticationExceptionHandler = authenticationExceptionHandler;
     }
 
     @Bean
@@ -52,13 +56,13 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/public").permitAll()
-                        .requestMatchers("/api/auth/login","/api/auth/signup").permitAll()
-                        .requestMatchers("/api/auth/logout").authenticated()
+                        .requestMatchers(SecurityConstants.JWTDisabledAntMatchers).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .maximumSessions(1));
+                        .maximumSessions(1))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationExceptionHandler));
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);

@@ -8,18 +8,20 @@ import org.example.firstproject.model.response.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-public class AuthenticationExceptionHandler extends AuthenticationException{
+@Component
+public class AuthenticationExceptionHandler implements AuthenticationEntryPoint, Serializable {
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
-
-    public AuthenticationExceptionHandler(String msg) {
-        super(msg);
-    }
-
-    public AuthenticationExceptionHandler(String msg, Throwable cause) {
-        super(msg, cause);
+        ObjectMapper mapper = new ObjectMapper();
+        HttpResponse errorResponse = new HttpResponse(HttpStatus.FORBIDDEN, "(JWT) " + authException.getMessage(), null, false);
+        String responseMsg = mapper.writeValueAsString(errorResponse);
+        response.getWriter().write(responseMsg);
+        response.setStatus(403);
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -20,9 +19,9 @@ public abstract class AuditModel<U> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_seq",sequenceName = "user_sequence",allocationSize = 1)
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
     @Column(name = AppTables.AuditModelTable.ID)
-    private  Long id;
+    private Long id;
 
     @CreatedBy
     @Column(name = AppTables.AuditModelTable.CREATED_BY)
