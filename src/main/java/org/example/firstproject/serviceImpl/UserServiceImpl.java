@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
 
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
         if (userExist != null) {
+            log.error("User already exists with email: {}", signUpRequest.getEmail());
             throw new UserAlreadyExistsException("User already exist with this email");
         }
         String username = signUpRequest.getFullName();
@@ -74,14 +75,13 @@ public class UserServiceImpl implements UserService {
         signedInUser.setPassword(passwordEncoder.encode(password));
 
         Role role = roleService.findByRoleName("ROLE_USER");
-
-        log.info(role.toString());
+        log.info("Assigned role:{}", role.toString());
 
         signedInUser.setRoles(Set.of(role));
 
         userRepository.save(signedInUser);
 
-        log.info("User created successfully:");
+        log.info("User created successfully: {}", signedInUser);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
         } catch (BadCredentialsException exception) {
 
             log.warn("Authentication failed: Invalid credentials for email - {}", loginRequest.getEmail());
-            log.debug("Authentication Exception: ", exception);
+            log.debug("Authentication Exception:", exception);
 
             throw new BadCredentialsException("Invalid email or password");
 

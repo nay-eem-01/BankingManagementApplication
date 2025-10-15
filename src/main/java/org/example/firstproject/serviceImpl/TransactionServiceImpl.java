@@ -1,5 +1,6 @@
 package org.example.firstproject.serviceImpl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.firstproject.entity.BankAccount;
 import org.example.firstproject.entity.Transactions;
 import org.example.firstproject.entity.User;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
@@ -43,11 +45,14 @@ public class TransactionServiceImpl implements TransactionService {
         Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(), sort);
 
         User loggedInUser = authUtil.getLoggedInUser();
-        BankAccount bankAccount = bankAccountRepository.findByUserId(loggedInUser.getId()).orElseThrow(()-> new ResourceNotFoundException("User Not found"));
+        log.info("Logged in userId: {} userEmail: {} userName: {} ", loggedInUser.getId(), loggedInUser.getEmail(), loggedInUser.getFullName());
+
+        BankAccount bankAccount = bankAccountRepository.findByUserId(loggedInUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User Not found"));
+        log.info("User Bank account number:{}", bankAccount.getAccountNumber());
 
         Specification<Transactions> specification = TransactionSpecification.getAllTransactionFromThisAccount(bankAccount.getAccountNumber());
 
-        Page<Transactions> transactionsPage = transactionRepository.findAll(specification,pageable);
+        Page<Transactions> transactionsPage = transactionRepository.findAll(specification, pageable);
         return transactionsPage.map(transactions -> modelMapper.map(transactions, TransactionResponse.class));
     }
 }

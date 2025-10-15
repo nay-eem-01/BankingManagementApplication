@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
 
         return HttpResponse.getResponseEntityForError(
                 HttpStatus.UNAUTHORIZED,
-                ex.getMessage(),
+                "Invalid password",
                 null);
     }
 
