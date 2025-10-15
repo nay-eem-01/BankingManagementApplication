@@ -7,6 +7,7 @@ import org.example.firstproject.model.AuditModel;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserResponse extends AuditModel<String> {
     private String name;
     private String email;

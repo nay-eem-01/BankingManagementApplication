@@ -2,14 +2,13 @@ package org.example.firstproject.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.security.PrivateKey;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class LoginResponse {
     private String accessToken;
     private String tokenType;

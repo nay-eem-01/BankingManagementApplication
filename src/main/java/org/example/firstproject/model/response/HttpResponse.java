@@ -3,12 +3,14 @@ package org.example.firstproject.model.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class HttpResponse {
 
     private HttpStatus status;
