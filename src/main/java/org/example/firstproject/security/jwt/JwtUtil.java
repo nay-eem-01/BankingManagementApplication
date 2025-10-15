@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.example.firstproject.constatnt.SecurityConstants;
 import org.example.firstproject.security.service.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -18,26 +18,18 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:TaK+HaV^uvCHEFsEVfypW#7g9^k*Z8$V}")
-    private String secretKey;
-
-    @Value("${jwt.expiration:120000}") // 1 hour default
-    private Long jwtExpiration;
-
-    @Value("${jwt.refresh.expiration:604800000}") // 7 days
-    private Long refreshTokenExpiration;
-
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(SecurityConstants.SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
     public String extractUsername(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getSubject();
     }
+
     public String extractTokenType(String token) {
         Claims claims = extractAllClaims(token);
-        return claims.get("type",String.class);
+        return claims.get("type", String.class);
     }
 
     private Claims extractAllClaims(String token) {
@@ -55,19 +47,18 @@ public class JwtUtil {
     public String generateAccessToken(Authentication authentication) {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("type","access");
-        return generateToken(claims, customUserDetails.getUsername(), jwtExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "access");
+        return generateToken(claims, customUserDetails.getUsername(), SecurityConstants.EXPIRATION_TIME);
     }
 
     public String generateRefreshToken(String username) {
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("type","refresh");
-        System.out.println("This is 2nd - refresh token");
-        return generateToken(claims, username,refreshTokenExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        return generateToken(claims, username, SecurityConstants.REFRESH_TOKEN_EXPIRATION_TIME);
     }
 
-    public String generateToken(Map<String, Object> extractClaims, String username,Long expiration) {
+    public String generateToken(Map<String, Object> extractClaims, String username, Long expiration) {
         return Jwts.builder()
                 .claims(extractClaims)
                 .subject(username)
