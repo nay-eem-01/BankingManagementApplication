@@ -1,7 +1,7 @@
 package org.example.firstproject.controller;
 
 import org.example.firstproject.model.request.BalanceTransferRequest;
-import org.example.firstproject.model.request.BankAccountRequest;
+import org.example.firstproject.model.request.DepositRequest;
 import org.example.firstproject.model.response.BankAccountResponse;
 import org.example.firstproject.model.response.HttpResponse;
 import org.example.firstproject.model.response.TransactionResponse;
@@ -29,8 +29,8 @@ public class BankAccountController {
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<HttpResponse> deposit(@RequestBody BankAccountRequest bankAccountRequest) {
-        BankAccountResponse bankAccountResponse = bankAccountService.deposit(bankAccountRequest);
+    public ResponseEntity<HttpResponse> deposit(@RequestBody DepositRequest depositRequest) {
+        BankAccountResponse bankAccountResponse = bankAccountService.deposit(depositRequest);
         return HttpResponse.getResponseEntity(HttpStatus.OK, "Successfully deposited", bankAccountResponse, true);
     }
 

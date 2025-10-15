@@ -39,6 +39,15 @@ public class GlobalExceptionHandler {
                 null);
     }
 
+    @ExceptionHandler(AccountNotExistException.class)
+    public ResponseEntity<HttpResponse> handleAccountNotExists(AccountNotExistException ex, HttpServletRequest request) {
+
+        return HttpResponse.getResponseEntityForError(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage(),
+                null);
+    }
+
 
     @ExceptionHandler(AuthenticationExceptionImpl.class)
     public ResponseEntity<HttpResponse> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {

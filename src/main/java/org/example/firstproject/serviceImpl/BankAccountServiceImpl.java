@@ -6,10 +6,11 @@ import org.example.firstproject.entity.BankAccount;
 import org.example.firstproject.entity.Transactions;
 import org.example.firstproject.entity.User;
 import org.example.firstproject.exceptionHandler.AccountAlreadyExistsExceptionHandler;
+import org.example.firstproject.exceptionHandler.AccountNotExistException;
 import org.example.firstproject.exceptionHandler.ResourceNotFoundException;
 import org.example.firstproject.exceptionHandler.TransactionExceptionHandler;
 import org.example.firstproject.model.request.BalanceTransferRequest;
-import org.example.firstproject.model.request.BankAccountRequest;
+import org.example.firstproject.model.request.DepositRequest;
 import org.example.firstproject.model.response.BankAccountResponse;
 import org.example.firstproject.model.response.TransactionResponse;
 import org.example.firstproject.repository.BankAccountRepository;
@@ -64,21 +65,22 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccountResponse deposit(BankAccountRequest bankAccountRequest) {
+    public BankAccountResponse deposit(DepositRequest depositRequest) {
 
         User loggedInUser = authUtil.getLoggedInUser();
-        String accountNumber = bankAccountRequest.getAccountNumber();
 
-        BankAccount bankAccount = bankAccountRepository.findByAccountNumber(accountNumber);
-
-        if (bankAccount.getUser() != loggedInUser) {
-            throw new TransactionExceptionHandler("Account number does not matches");
+        if (hasAccount(loggedInUser)) {
+            log.warn("User {} attempted to deposit but has no account", loggedInUser.getEmail());
+            throw new AccountNotExistException("Account not created yet");
         }
-        if (bankAccountRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-            log.error("Deposit amount is O or less than 0: {}", bankAccountRequest.getAmount());
+
+        if (depositRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            log.error("Deposit amount is O or less than 0: {}", depositRequest.getAmount());
             throw new TransactionExceptionHandler("Amount should be more than 0.00");
         }
-        bankAccount.setBalance(bankAccount.getBalance().add(bankAccountRequest.getAmount()));
+        BankAccount bankAccount = bankAccountRepository.findByUserId(loggedInUser.getId()).orElseThrow(() -> new ResourceNotFoundException("Bank account not found"));
+
+        bankAccount.setBalance(bankAccount.getBalance().add(depositRequest.getAmount()));
         return modelMapper.map(bankAccountRepository.save(bankAccount), BankAccountResponse.class);
     }
 
@@ -93,7 +95,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         User loggedInUser = authUtil.getLoggedInUser();
 
         String toAccountNumber = balanceTransferRequest.getToAccountNumber();
-        BankAccount receiverAccount = bankAccountRepository.findByAccountNumber(toAccountNumber);
+        BankAccount receiverAccount = bankAccountRepository.findByAccountNumber(toAccountNumber).orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         if (!userRepository.existsUserByEmail(receiverAccount.getUser().getEmail())) {
             log.error("Receiver account does not exist: {}", receiverAccount);
@@ -138,6 +140,10 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .findByUserId(loggedInUser.getId()).orElseThrow(() -> new ResourceNotFoundException("Sender account does not exist"));
         log.info("Balance: {}", bankAccount.getBalance());
         return new BankAccountResponse(bankAccount.getAccountNumber(), bankAccount.getBalance());
+    }
+
+    public Boolean hasAccount(User user) {
+        return bankAccountRepository.existsByUserId(user.getId());
     }
 
 
