@@ -138,8 +138,7 @@ DATABASE intern_project;
 Connect to database (in psql)
 
 ```sql --
-\c
-intern_project
+\c intern_project;
 ```
 
 Verify connection
@@ -176,7 +175,7 @@ logging.level.root=INFO
 logging.level.org.example.firstproject=DEBUG
 ```
 
-**Note: Replace postgres and nayeem101 with your actual PostgreSQL credentials**
+**Note: Replace postgres and 'your password' ,with your actual PostgreSQL credentials**
 
 # Clean and install dependencies
 
@@ -236,9 +235,10 @@ http://localhost:8080/api
 
 ```json
 {
-  "name": "abc",
-  "email": "abc@gmail.com",
-  "password": "1234"
+    "status": "CREATED",
+    "message": "User created successfully",
+    "payload": null,
+    "success": true
 }
 ```
 
@@ -291,8 +291,17 @@ http://localhost:8080/api
 **Response Body:**
 
 ```json
+
 {
+    "status": "CREATED",
+    "message": "Account created successfully",
+    "payload": {
+        "accountNumber": "ACC352",
+        "balance": 0.0
+    },
+    "success": true
 }
+
 ```
 
 ### 4. Deposit Funds
@@ -303,8 +312,7 @@ http://localhost:8080/api
 
 ```json
 {
-  "accountNumber": "ACC52",
-  "amount": "0.00"
+  "amount": "1000.00"
 }
 ```
 
@@ -312,6 +320,13 @@ http://localhost:8080/api
 
 ```json
 {
+    "status": "OK",
+    "message": "Successfully deposited",
+    "payload": {
+        "accountNumber": "ACC352",
+        "balance": 1000.00
+    },
+    "success": true
 }
 ```
 
@@ -323,6 +338,13 @@ http://localhost:8080/api
 
 ```json
 {
+    "status": "OK",
+    "message": "Remaining balance",
+    "payload": {
+        "accountNumber": "ACC52",
+        "balance": 5560.00
+    },
+    "success": true
 }
 ```
 
@@ -343,6 +365,15 @@ http://localhost:8080/api
 
 ```json
 {
+    "status": "OK",
+    "message": "Balance transferred successfully",
+    "payload": {
+        "transactionId": "5d552221-14e9-48db-ab2f-dd8613ab37a2",
+        "fromAccountNumber": "ACC352",
+        "toAccountNumber": "ACC52",
+        "amount": 5000.00
+    },
+    "success": true
 }
 ```
 
@@ -358,19 +389,35 @@ http://localhost:8080/api
 
 ```json
 {
+    "status": "OK",
+    "message": "Transactions loaded successfully",
+    "payload": {
+        "data": [
+            {
+                "transactionId": "f541e4ca-5219-414c-9564-6a8e357b1859",
+                "fromAccountNumber": "ACC52",
+                "toAccountNumber": "ACC102",
+                "amount": 300.00
+            },
+            {
+                "transactionId": "349bd24a-c5c8-4890-be45-35dd00125304",
+                "fromAccountNumber": "ACC52",
+                "toAccountNumber": "ACC102",
+                "amount": 20.00
+            }
+        ],
+        "pageNo": 0,
+        "pageSize": 10,
+        "totalElement": 2,
+        "totalPage": 1,
+        "hasNext": false,
+        "hasPrevious": false
+    },
+    "success": true
 }
 ```
 
 # Authentication
-
-How JWT Authentication Works
-
-- Login: User provides email and password to /api/auth/login
-- Token Generation: Server generates JWT token valid for 24 hours
-- Token Storage: Client stores token (typically in localStorage or sessionStorage)
-- Authenticated Requests: Include token in Authorization header: Bearer <token>
-- Token Validation: Server validates token for each protected endpoint
-
 ### Using JWT Token
 
 Include in Request Header:
@@ -383,7 +430,6 @@ curl -X GET http://localhost:8080/api/accounts/balance \
 ### Token Expiration
 
 - Access Token: 24 hours (86400000 ms)
-- Refresh Token: 7 days (604800000 ms)
 - Expired tokens return 401 Unauthorized
 
 # Error Handling
@@ -402,6 +448,4 @@ curl -X GET http://localhost:8080/api/accounts/balance \
 | `409 Conflict`              | Duplicate account or email      | User already exists or data conflict      |
 | `500 Internal Server Error` | Server error                    | Unexpected error occurred on the server   |
 
-**Error Responses**
-----------------------
 
