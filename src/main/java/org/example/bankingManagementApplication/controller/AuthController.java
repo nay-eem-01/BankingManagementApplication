@@ -1,6 +1,7 @@
 package org.example.bankingManagementApplication.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.example.bankingManagementApplication.model.request.SignInRequest;
 import org.example.bankingManagementApplication.model.request.SignUpRequest;
 import org.example.bankingManagementApplication.model.response.HttpResponse;
@@ -15,12 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
-
-    public AuthController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> authenticateUser(@Valid @RequestBody SignInRequest loginRequest) {
@@ -33,6 +31,4 @@ public class AuthController {
         userService.signUp(signUpRequest);
         return HttpResponse.getResponseEntity(HttpStatus.CREATED, "User created successfully", true);
     }
-
-
 }

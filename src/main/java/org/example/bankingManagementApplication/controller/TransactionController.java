@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.response.HttpResponse;
 import org.example.bankingManagementApplication.model.response.TransactionResponse;
@@ -16,13 +17,10 @@ import static org.example.bankingManagementApplication.constatnt.AppConstants.*;
 
 @RestController
 @RequestMapping("/api/accounts")
+@RequiredArgsConstructor
 public class TransactionController {
+
     private final TransactionService transactionService;
-
-    public TransactionController(TransactionService transactionService) {
-        this.transactionService = transactionService;
-    }
-
 
     @GetMapping("/transactions")
     public ResponseEntity<HttpResponse> getAllTransactions(

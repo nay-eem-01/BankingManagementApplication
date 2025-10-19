@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.bankingManagementApplication.entity.Privilege;
 import org.example.bankingManagementApplication.model.response.HttpResponse;
 import org.example.bankingManagementApplication.service.PrivilegeService;
@@ -13,14 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/privilege")
+@RequiredArgsConstructor
 public class PrivilegeController {
 
     private final PrivilegeService privilegeService;
-
-
-    public PrivilegeController(PrivilegeService privilegeService) {
-        this.privilegeService = privilegeService;
-    }
 
     @GetMapping("/get-privileges")
     public ResponseEntity<HttpResponse> getALlPrivilege() {

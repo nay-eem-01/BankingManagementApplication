@@ -1,6 +1,7 @@
 package org.example.bankingManagementApplication.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.example.bankingManagementApplication.entity.User;
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.request.UserUpdateRequest;
@@ -19,13 +20,10 @@ import static org.example.bankingManagementApplication.constatnt.AppConstants.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
-
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/get-all-user")
     public ResponseEntity<HttpResponse> getAllUsers() {
@@ -58,7 +56,6 @@ public class UserController {
         return HttpResponse.getResponseEntity(HttpStatus.OK, "User fetched successfully", userResponse, true);
     }
 
-
     @PutMapping("/update-user/{id}")
     public ResponseEntity<HttpResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
         UserUpdateResponse updatedUser = userService.updateUser(id, userUpdateRequest);
@@ -70,6 +67,4 @@ public class UserController {
         userService.deleteUser(id);
         return HttpResponse.getResponseEntity(true, "Deleted successfully");
     }
-
-
 }

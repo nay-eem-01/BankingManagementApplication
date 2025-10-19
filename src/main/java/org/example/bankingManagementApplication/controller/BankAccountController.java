@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.bankingManagementApplication.model.request.BalanceTransferRequest;
 import org.example.bankingManagementApplication.model.request.DepositRequest;
 import org.example.bankingManagementApplication.model.response.BankAccountResponse;
@@ -13,14 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/accounts")
+@RequiredArgsConstructor
 public class BankAccountController {
-    private final BankAccountService bankAccountService;
-    private final UserService userService;
 
-    public BankAccountController(BankAccountService bankAccountService, UserService userService) {
-        this.bankAccountService = bankAccountService;
-        this.userService = userService;
-    }
+    private final BankAccountService bankAccountService;
 
     @PostMapping("/init")
     public ResponseEntity<HttpResponse> CreateAccount() {
