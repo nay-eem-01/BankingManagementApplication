@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.bankingManagementApplication.constatnt.AppTables;
 import org.example.bankingManagementApplication.model.AuditModel;
@@ -12,6 +13,7 @@ import org.example.bankingManagementApplication.model.AuditModel;
 @Table(name = AppTables.PRIVILEGE_NAME)
 @Getter
 @Setter
+@NoArgsConstructor
 public class Privilege extends AuditModel<String> {
 
     @Column(name = AppTables.PrivilegeTable.NAME)

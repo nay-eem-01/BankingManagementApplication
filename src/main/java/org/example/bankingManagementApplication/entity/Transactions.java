@@ -4,28 +4,29 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.example.bankingManagementApplication.constatnt.AppTables;
 import org.example.bankingManagementApplication.model.AuditModel;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = AppTables.TRANSACTION_NAME)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transactions extends AuditModel<String> {
 
-    @Column(nullable = false)
+    @Column(name = AppTables.TransactionTable.TRANSACTION_ID, nullable = false)
     private String transactionId;
 
-    @Column(nullable = false)
+    @Column(name = AppTables.TransactionTable.FROM_ACCOUNT_NUMBER, nullable = false)
     private String fromAccountNumber;
 
-    @Column(nullable = false)
+    @Column(name = AppTables.TransactionTable.TO_ACCOUNT_NUMBER, nullable = false)
     private String toAccountNumber;
 
-    @Column(nullable = false)
+    @Column(name = AppTables.TransactionTable.TRANSACTION_AMOUNT, nullable = false)
     private BigDecimal amount;
 
 }

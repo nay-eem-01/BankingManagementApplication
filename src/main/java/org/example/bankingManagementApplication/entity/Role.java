@@ -2,6 +2,7 @@ package org.example.bankingManagementApplication.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.bankingManagementApplication.constatnt.AppTables;
 import org.example.bankingManagementApplication.enums.RoleType;
@@ -13,6 +14,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @Table(name = AppTables.ROLE_NAME)
+@NoArgsConstructor
 public class Role extends AuditModel<String> {
 
     @Column(name = AppTables.RoleTable.ROLE_NAME)

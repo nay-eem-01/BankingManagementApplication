@@ -4,48 +4,51 @@ public final class AppTables {
 
     public AppTables() {
     }
-    public static final String USER_NAME = "USERS";
-    public static final String ROLE_NAME = "ROLE";
-    public static final String PAGE_NAME = "PAGE";
-    public static final String DB_FILE_NAME = "DB_FILE";
-    public static final String SECTION_NAME = "SECTION";
-    public static final String USER_ROLE_NAME = "USER_ROLE";
-    public static final String PRIVILEGE_NAME = "PRIVILEGE";
-    public static final String NOTIFICATION_NAME = "notification";
-    public static final String REFRESH_TOKEN_NAME = "REFRESH_TOKEN";
-    public static final String ROLE_PRIVILEGE_NAME =  "ROLE_PRIVILEGE";
+    public static final String USER_NAME = "users";
+    public static final String ROLE_NAME = "role";
+    public static final String USER_ROLE_NAME = "user_role";
+    public static final String PRIVILEGE_NAME = "privilege";
+    public static final String ROLE_PRIVILEGE_NAME =  "role_privilege";
+    public static final String BANK_ACCOUNT_NAME =  "bank_accounts";
+    public static final String TRANSACTION_NAME =  "transactions";
 
     public static final class AuditModelTable {
-        public static final String ID = "ID";
-        public static final String CREATED_BY = "CREATED_BY";
-        public static final String CREATION_DATE = "CREATION_DATE";
-        public static final String LAST_MODIFIED_BY = "LAST_MODIFIED_BY";
-        public static final String LAST_MODIFIED_DATE = "LAST_MODIFIED_DATE";
+        public static final String ID = "id";
+        public static final String CREATED_BY = "created_by";
+        public static final String CREATION_DATE = "creation_date";
+        public static final String LAST_MODIFIED_BY = "last_modified_by";
+        public static final String LAST_MODIFIED_DATE = "last_modified_date";
     }
 
     public static final class UserTable {
-        public static final String EMAIL = "EMAIL";
-        public static final String NAME = "NAME";
-        public static final String BANNED = "BANNED";
-        public static final String ROLE_ID = "ROLE_ID";
-        public static final String USER_ID = "USER_ID";
-        public static final String VERIFIED = "VERIFIED";
-        public static final String password = "PASSWORD";
-        public static final String PASSWORD_RESET_TOKEN = "PASSWORD_RESET_TOKEN";
+        public static final String EMAIL = "email";
+        public static final String NAME = "full_name";
+        public static final String USER_ID = "user_id";
+        public static final String PASSWORD = "password";
+    }
+
+    public static final class BankAccountTable {
+    public static final String ACCOUNT_NUMBER = "account_number";
+    public static final String BALANCE = "balance";
+    }
+
+    public static final class TransactionTable {
+        public static final String TRANSACTION_ID = "transaction_Id";
+        public static final String TO_ACCOUNT_NUMBER = "to_account_number";
+        public static final String FROM_ACCOUNT_NUMBER = "from_account_number";
+        public static final String TRANSACTION_AMOUNT = "amount";
     }
 
     public static final  class RoleTable{
 
-        public static final String ROLE_ID = "ROLE_ID";
-        public static final String ROLE_TYPE = "ROLE_TYPE";
-        public static final String ROLE_NAME = "ROLE_NAME";
+        public static final String ROLE_ID = "role_id";
+        public static final String ROLE_TYPE = "role_type";
+        public static final String ROLE_NAME = "role_name";
     }
 
     public static final class PrivilegeTable {
-        public static final String PRIVILEGE_ID = "PRIVILEGE_ID";
-        public static final String NAME = "NAME";
-        public static final String DESC_NAME = "DESC_NAME";
+        public static final String PRIVILEGE_ID = "privilege_id";
+        public static final String NAME = "name";
+        public static final String DESC_NAME = "desc_name";
     }
-
-
 }
