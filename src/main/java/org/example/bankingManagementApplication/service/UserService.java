@@ -8,12 +8,11 @@ import org.example.bankingManagementApplication.model.request.SignUpRequest;
 import org.example.bankingManagementApplication.model.response.LoginResponse;
 import org.example.bankingManagementApplication.model.response.UserResponse;
 import org.springframework.data.domain.Page;
-
 import java.util.List;
 
 public interface UserService {
 
-    void createNewUser(SignUpRequest signUpRequest);
+    void signUp(SignUpRequest signUpRequest);
 
     List<UserResponse> getAllUsers();
 
@@ -30,6 +29,4 @@ public interface UserService {
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 
     LoginResponse login(SignInRequest loginRequest);
-
-
 }

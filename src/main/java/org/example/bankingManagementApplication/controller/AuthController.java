@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<HttpResponse> createUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        userService.createNewUser(signUpRequest);
+        userService.signUp(signUpRequest);
         return HttpResponse.getResponseEntity(HttpStatus.CREATED, "User created successfully", true);
     }
 

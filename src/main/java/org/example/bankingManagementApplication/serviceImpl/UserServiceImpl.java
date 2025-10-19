@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public void createNewUser(SignUpRequest signUpRequest) {
+    public void signUp(SignUpRequest signUpRequest) {
 
         User userExist = userRepository.findTopByEmail(signUpRequest.getEmail()).orElse(null);
         if (userExist != null) {
