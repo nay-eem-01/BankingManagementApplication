@@ -5,8 +5,10 @@ import org.example.bankingManagementApplication.entity.User;
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.request.SignInRequest;
 import org.example.bankingManagementApplication.model.request.SignUpRequest;
+import org.example.bankingManagementApplication.model.request.UserUpdateRequest;
 import org.example.bankingManagementApplication.model.response.LoginResponse;
 import org.example.bankingManagementApplication.model.response.UserResponse;
+import org.example.bankingManagementApplication.model.response.UserUpdateResponse;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public interface UserService {
 
     List<UserResponse> getUserByUsername(String username);
 
-    UserDto updateUser(Long id, UserDto userDto);
+    UserUpdateResponse updateUser(Long id, UserUpdateRequest userUpdateRequest);
 
     void deleteUser(Long id);
 

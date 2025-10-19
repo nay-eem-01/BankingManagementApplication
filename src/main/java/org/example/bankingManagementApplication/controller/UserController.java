@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import org.example.bankingManagementApplication.dto.UserDto;
 import org.example.bankingManagementApplication.entity.User;
 import org.example.bankingManagementApplication.model.PaginationArgs;
+import org.example.bankingManagementApplication.model.request.UserUpdateRequest;
 import org.example.bankingManagementApplication.model.response.HttpResponse;
 import org.example.bankingManagementApplication.model.response.UserResponse;
+import org.example.bankingManagementApplication.model.response.UserUpdateResponse;
 import org.example.bankingManagementApplication.service.UserService;
 import org.example.bankingManagementApplication.utils.PaginationUtil;
 import org.springframework.data.domain.Page;
@@ -61,8 +63,8 @@ public class UserController {
 
 
     @PutMapping("/update-user/{id}")
-    public ResponseEntity<HttpResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
-        UserDto updatedUser = userService.updateUser(id, userDto);
+    public ResponseEntity<HttpResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+        UserUpdateResponse updatedUser = userService.updateUser(id, userUpdateRequest);
         return HttpResponse.getResponseEntity(HttpStatus.OK, "User info updated successfully", updatedUser, true);
     }
 

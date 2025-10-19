@@ -3,7 +3,6 @@ package org.example.bankingManagementApplication.serviceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bankingManagementApplication.constatnt.AppConstants;
-import org.example.bankingManagementApplication.dto.UserDto;
 import org.example.bankingManagementApplication.entity.Role;
 import org.example.bankingManagementApplication.entity.User;
 import org.example.bankingManagementApplication.exceptionHandler.AuthenticationExceptionImpl;
@@ -12,8 +11,10 @@ import org.example.bankingManagementApplication.exceptionHandler.UserAlreadyExis
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.request.SignInRequest;
 import org.example.bankingManagementApplication.model.request.SignUpRequest;
+import org.example.bankingManagementApplication.model.request.UserUpdateRequest;
 import org.example.bankingManagementApplication.model.response.LoginResponse;
 import org.example.bankingManagementApplication.model.response.UserResponse;
+import org.example.bankingManagementApplication.model.response.UserUpdateResponse;
 import org.example.bankingManagementApplication.repository.UserRepository;
 import org.example.bankingManagementApplication.security.jwt.JwtUtil;
 import org.example.bankingManagementApplication.service.RoleService;
@@ -79,11 +80,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAllUsers() {
 
         List<User> allUsers = userRepository.findAll();
-        return allUsers
-                .stream()
-                .map(user ->
-                        modelMapper.map(user, UserResponse.class))
-                .collect(Collectors.toList());
+        return allUsers.stream().map(user -> modelMapper.map(user, UserResponse.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -101,24 +98,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> getUserByUsername(String username) {
         List<User> users = userRepository.findAllByFullName(username);
-        return users.stream()
-                .map(user ->
-                        modelMapper.map(user, UserResponse.class))
-                .collect(Collectors.toList());
+        return users.stream().map(user -> modelMapper.map(user, UserResponse.class)).collect(Collectors.toList());
     }
 
     @Override
-    public UserDto updateUser(Long id, UserDto userDto) {
+    public UserUpdateResponse updateUser(Long id, UserUpdateRequest userUpdateRequest) {
 
-        User updatedUser = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User does not exist"));
+        user.setFullName(userUpdateRequest.getFullName());
+        user.setEmail(userUpdateRequest.getEmail());
 
-        if (userDto.getName() != null) {
-            updatedUser.setFullName(userDto.getName());
-        }
-        if (userDto.getEmail() != null) {
-            updatedUser.setEmail(userDto.getEmail());
-        }
-        return modelMapper.map(userRepository.save(updatedUser), UserDto.class);
+        return modelMapper.map(userRepository.save(user), UserUpdateResponse.class);
     }
 
     @Override
@@ -130,9 +120,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> getAllUserPaginated(PaginationArgs paginationArgs) {
 
-        Sort sortByOrder = paginationArgs.getSortOrder().equalsIgnoreCase("asc")
-                ? Sort.by(paginationArgs.getSortBy()).ascending()
-                : Sort.by(paginationArgs.getSortBy()).descending();
+        Sort sortByOrder = paginationArgs
+                .getSortOrder()
+                .equalsIgnoreCase("asc") ? Sort.by(paginationArgs.getSortBy()).ascending() : Sort.by(paginationArgs.getSortBy()).descending();
 
         Pageable pageable = PageRequest.of(paginationArgs.getPageNo(), paginationArgs.getPageSize(), sortByOrder);
 
