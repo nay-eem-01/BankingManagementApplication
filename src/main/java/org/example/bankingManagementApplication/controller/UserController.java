@@ -1,7 +1,6 @@
 package org.example.bankingManagementApplication.controller;
 
 import jakarta.validation.Valid;
-import org.example.bankingManagementApplication.dto.UserDto;
 import org.example.bankingManagementApplication.entity.User;
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.request.UserUpdateRequest;
@@ -9,7 +8,6 @@ import org.example.bankingManagementApplication.model.response.HttpResponse;
 import org.example.bankingManagementApplication.model.response.UserResponse;
 import org.example.bankingManagementApplication.model.response.UserUpdateResponse;
 import org.example.bankingManagementApplication.service.UserService;
-import org.example.bankingManagementApplication.utils.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +21,10 @@ import static org.example.bankingManagementApplication.constatnt.AppConstants.*;
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
-    private final PaginationUtil paginationUtil;
 
-    public UserController(UserService userService, PaginationUtil paginationUtil) {
+
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.paginationUtil = paginationUtil;
     }
 
     @GetMapping("/get-all-user")
@@ -45,7 +42,7 @@ public class UserController {
 
         PaginationArgs paginationArgs = new PaginationArgs(pageNo, pageSize, sortBy, sortOrder);
         Page<User> page = userService.getAllUserPaginated(paginationArgs);
-        return HttpResponse.getResponseEntity(HttpStatus.OK, paginationUtil.buildingPaginatedResponse(page));
+        return HttpResponse.getResponseEntity(HttpStatus.OK, page);
     }
 
     @GetMapping("/get-user/{id}")

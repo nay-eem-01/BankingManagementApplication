@@ -2,10 +2,8 @@ package org.example.bankingManagementApplication.controller;
 
 import org.example.bankingManagementApplication.model.PaginationArgs;
 import org.example.bankingManagementApplication.model.response.HttpResponse;
-import org.example.bankingManagementApplication.model.response.PaginatedResponse;
 import org.example.bankingManagementApplication.model.response.TransactionResponse;
 import org.example.bankingManagementApplication.service.TransactionService;
-import org.example.bankingManagementApplication.utils.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +18,9 @@ import static org.example.bankingManagementApplication.constatnt.AppConstants.*;
 @RequestMapping("/api/accounts")
 public class TransactionController {
     private final TransactionService transactionService;
-    private final PaginationUtil paginationUtil;
 
-
-    public TransactionController(TransactionService transactionService, PaginationUtil paginationUtil) {
+    public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.paginationUtil = paginationUtil;
     }
 
 
@@ -37,8 +32,7 @@ public class TransactionController {
             @RequestParam(name = SORT_ORDER, defaultValue = "asc") String sortOrder) {
 
         PaginationArgs paginationArgs = new PaginationArgs(pageNo, pageSize, sortBy, sortOrder);
-        Page<TransactionResponse> transactionResponses = transactionService.getAllTransactionsPaginated(paginationArgs);
-        PaginatedResponse<TransactionResponse> paginatedResponse = paginationUtil.buildingPaginatedResponse(transactionResponses);
-        return HttpResponse.getResponseEntity(HttpStatus.OK, "Transactions loaded successfully", paginatedResponse, true);
+        Page<TransactionResponse> transactionsPaginated = transactionService.getAllTransactionsPaginated(paginationArgs);
+        return HttpResponse.getResponseEntity(HttpStatus.OK, "Transactions loaded successfully", transactionsPaginated, true);
     }
 }
