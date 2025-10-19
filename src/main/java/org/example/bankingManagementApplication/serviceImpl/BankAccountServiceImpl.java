@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.serviceImpl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bankingManagementApplication.constatnt.AppConstants;
 import org.example.bankingManagementApplication.entity.BankAccount;
@@ -27,6 +28,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BankAccountServiceImpl implements BankAccountService {
 
     private final UserRepository userRepository;
@@ -34,15 +36,6 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final BankAccountRepository bankAccountRepository;
     private final ModelMapper modelMapper;
     private final TransactionRepository transactionRepository;
-
-
-    public BankAccountServiceImpl(UserRepository userRepository, AuthUtil authUtil, BankAccountRepository bankAccountRepository, ModelMapper modelMapper, TransactionRepository transactionRepository) {
-        this.userRepository = userRepository;
-        this.authUtil = authUtil;
-        this.bankAccountRepository = bankAccountRepository;
-        this.modelMapper = modelMapper;
-        this.transactionRepository = transactionRepository;
-    }
 
     @Override
     public BankAccountResponse createNewAccount() {

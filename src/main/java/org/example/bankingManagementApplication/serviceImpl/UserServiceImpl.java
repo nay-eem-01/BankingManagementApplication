@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.serviceImpl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bankingManagementApplication.constatnt.AppConstants;
 import org.example.bankingManagementApplication.dto.UserDto;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -45,17 +47,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final JwtUtil jwtUtil;
-
-
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, RoleService roleService, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.modelMapper = modelMapper;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-        this.roleService = roleService;
-        this.jwtUtil = jwtUtil;
-    }
-
 
     @Override
     public void createNewUser(SignUpRequest signUpRequest) {

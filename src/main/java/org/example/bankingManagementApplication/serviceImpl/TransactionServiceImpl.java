@@ -1,5 +1,6 @@
 package org.example.bankingManagementApplication.serviceImpl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bankingManagementApplication.entity.BankAccount;
 import org.example.bankingManagementApplication.entity.Transactions;
@@ -22,18 +23,12 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AuthUtil authUtil;
     private final BankAccountRepository bankAccountRepository;
     private final ModelMapper modelMapper;
-
-    public TransactionServiceImpl(TransactionRepository transactionRepository, AuthUtil authUtil, BankAccountRepository bankAccountRepository, ModelMapper modelMapper) {
-        this.transactionRepository = transactionRepository;
-        this.authUtil = authUtil;
-        this.bankAccountRepository = bankAccountRepository;
-        this.modelMapper = modelMapper;
-    }
 
     @Override
     public Page<TransactionResponse> getAllTransactionsPaginated(PaginationArgs paginationArgs) {
