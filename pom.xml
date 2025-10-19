@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>firstProject</artifactId>
+    <artifactId>bankingManagementApplication</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>firstProject</name>
-    <description>firstProject</description>
+    <name>bankingManagementApplication</name>
+    <description>bankingManagementApplication</description>
     <properties>
         <java.version>21</java.version>
     </properties>
