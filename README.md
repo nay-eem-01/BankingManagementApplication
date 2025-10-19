@@ -172,7 +172,7 @@ jwt.expiration=86400000
 jwt.refreshToken.expiration=604800000
 # Logging Configuration
 logging.level.root=INFO
-logging.level.org.example.firstproject=DEBUG
+logging.level.org.example.bankingManagementApplication=DEBUG
 ```
 
 **Note: Replace postgres and 'your password' ,with your actual PostgreSQL credentials**
