@@ -31,4 +31,8 @@ public interface UserService {
     Page<User> getAllUserPaginated(PaginationArgs paginationArgs);
 
     LoginResponse login(SignInRequest loginRequest);
+
+    void saveUser(User superAdminUser);
+
+    User findByEmail(String initialUsername);
 }

@@ -167,5 +167,15 @@ public class UserServiceImpl implements UserService {
         return new LoginResponse(jwt, AppConstants.JWT_TOKEN_TYPE, userResponse);
     }
 
+    @Override
+    public void saveUser(User superAdminUser) {
+        userRepository.save(superAdminUser);
+    }
+
+    @Override
+    public User findByEmail(String initialUsername) {
+        return userRepository.findTopByEmail(initialUsername).orElse(null);
+    }
+
 
 }

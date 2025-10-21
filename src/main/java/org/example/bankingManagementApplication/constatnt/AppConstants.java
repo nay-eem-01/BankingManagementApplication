@@ -12,7 +12,7 @@ public class AppConstants {
     public static final String SORT_BY = "sortBy";
     public static final String SORT_ORDER = "sortOrder";
 
-    public static String INITIAL_USERNAME = "super_admin@disl.com";
+    public static String INITIAL_USERNAME = "admin@gmail.com";
     public static String INITIAL_PASSWORD = "123456";
 
     public static String INITIAL_ROLE = "SUPER ADMIN";
