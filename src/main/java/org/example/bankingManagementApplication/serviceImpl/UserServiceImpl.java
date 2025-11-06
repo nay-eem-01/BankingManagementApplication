@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         signedInUser.setFullName(username);
         signedInUser.setPassword(passwordEncoder.encode(password));
 
-        Role role = roleService.findByRoleName("ROLE_USER");
+        Role role = roleService.findByRoleName(AppConstants.USER_ROLE);
         log.info("Assigned role:{}", role.toString());
 
         signedInUser.setRoles(Set.of(role));
@@ -173,8 +173,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String initialUsername) {
-        return userRepository.findTopByEmail(initialUsername).orElse(null);
+    public User findByEmail(String email) {
+        return userRepository.findTopByEmail(email)
+                .orElseThrow(()-> new ResourceNotFoundException("User not found with this email"));
     }
 
 

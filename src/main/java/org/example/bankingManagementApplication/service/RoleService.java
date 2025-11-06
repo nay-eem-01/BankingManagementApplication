@@ -1,19 +1,26 @@
 package org.example.bankingManagementApplication.service;
 
-import org.example.bankingManagementApplication.entity.Privilege;
 import org.example.bankingManagementApplication.entity.Role;
 import org.example.bankingManagementApplication.entity.User;
-import org.example.bankingManagementApplication.enums.RoleType;
+import org.example.bankingManagementApplication.model.request.RoleCreateRequest;
+import org.example.bankingManagementApplication.model.request.RoleUpdateRequest;
 
 import java.util.List;
 
 public interface RoleService {
 
 
-    Role findByRoleName(String userRole);
+    Role findByRoleName(String roleName);
 
-    void saveRole(Role superAdminRole);
+    void saveRole(Role role);
 
-    void createRole(String userRole, RoleType roleType, Object o, List<Privilege> consumerPrivilege);
+    void createRole(RoleCreateRequest roleCreateRequest);
+
     List<Role> getUserRoles(User user);
+
+    List<String> getRoleType();
+
+    Role updateRole(RoleUpdateRequest roleUpdateRequest);
+
+    void deleteRole(Long roleId);
 }

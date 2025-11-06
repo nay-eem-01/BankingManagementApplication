@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
                 null);
     }
 
-    @ExceptionHandler(AccountAlreadyExistsExceptionHandler.class)
-    public ResponseEntity<HttpResponse> handleAccountAlreadyExists(AccountAlreadyExistsExceptionHandler ex, HttpServletRequest request) {
+    @ExceptionHandler(AlreadyExistsExceptionHandler.class)
+    public ResponseEntity<HttpResponse> handleAccountAlreadyExists(AlreadyExistsExceptionHandler ex, HttpServletRequest request) {
 
         return HttpResponse.getResponseEntityForError(
                 HttpStatus.CONFLICT,

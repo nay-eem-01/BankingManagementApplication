@@ -34,5 +34,5 @@ public interface UserService {
 
     void saveUser(User superAdminUser);
 
-    User findByEmail(String initialUsername);
+    User findByEmail(String email);
 }

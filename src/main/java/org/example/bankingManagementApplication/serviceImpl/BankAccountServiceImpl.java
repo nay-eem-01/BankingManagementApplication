@@ -6,7 +6,7 @@ import org.example.bankingManagementApplication.constatnt.AppConstants;
 import org.example.bankingManagementApplication.entity.BankAccount;
 import org.example.bankingManagementApplication.entity.Transactions;
 import org.example.bankingManagementApplication.entity.User;
-import org.example.bankingManagementApplication.exceptionHandler.AccountAlreadyExistsExceptionHandler;
+import org.example.bankingManagementApplication.exceptionHandler.AlreadyExistsExceptionHandler;
 import org.example.bankingManagementApplication.exceptionHandler.AccountNotExistException;
 import org.example.bankingManagementApplication.exceptionHandler.ResourceNotFoundException;
 import org.example.bankingManagementApplication.exceptionHandler.TransactionExceptionHandler;
@@ -42,7 +42,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         User loggedInUser = authUtil.getLoggedInUser();
         if (bankAccountRepository.findByUserId(loggedInUser.getId()).isPresent()) {
             log.error("User already exists with email: {}", loggedInUser.getEmail());
-            throw new AccountAlreadyExistsExceptionHandler("User already have account");
+            throw new AlreadyExistsExceptionHandler("User already have account");
         }
 
         BankAccount bankAccount = new BankAccount();

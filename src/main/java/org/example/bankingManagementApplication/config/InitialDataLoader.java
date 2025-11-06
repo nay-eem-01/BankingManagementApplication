@@ -29,6 +29,11 @@ public class InitialDataLoader implements ApplicationListener<ApplicationContext
 
     @Override
     public void onApplicationEvent(ApplicationContextEvent event) {
+
+        if (alreadySetup || checkIfSuperAdminExist()){
+            return;
+        }
+
         List<Privilege> superAdminPrivileges = new ArrayList<>();
 
         for (Map.Entry<String,String> entry : AppConstants.PERMISSIONS.entrySet()){
@@ -45,17 +50,23 @@ public class InitialDataLoader implements ApplicationListener<ApplicationContext
             roleService.saveRole(superAdminRole);
         }
 
-        if (alreadySetup || checkIfSuperAdminExist()){
-            return;
-        }
-
         List<Privilege> consumerPrivilege = new ArrayList<>();
         Privilege newPrivilege = privilegeService.createPrivilege(AppConstants.consumerPermission,AppConstants.consumerPermissionDesc);
         superAdminPrivileges.add(newPrivilege);
         consumerPrivilege.add(newPrivilege);
 
-        roleService.createRole(AppConstants.userRole, RoleType.USER,null,consumerPrivilege);
-        roleService.createRole(AppConstants.INITIAL_ROLE, RoleType.ADMIN,null,superAdminPrivileges);
+        Role userRole = new Role();
+        userRole.setRoleName(AppConstants.USER_ROLE);
+        userRole.setRoleType(RoleType.USER);
+        userRole.setPrivileges(consumerPrivilege);
+
+        Role superAdminRole = new Role();
+        superAdminRole.setRoleName(AppConstants.INITIAL_ROLE);
+        superAdminRole.setRoleType(RoleType.ADMIN);
+        superAdminRole.setPrivileges(superAdminPrivileges);
+
+        roleService.saveRole(superAdminRole);
+        roleService.saveRole(userRole);
 
         Set<Role> roleSet = new HashSet<>();
         Role role = roleService.findByRoleName(AppConstants.INITIAL_ROLE);
@@ -63,6 +74,7 @@ public class InitialDataLoader implements ApplicationListener<ApplicationContext
         if (role != null){
             roleSet.add(role);
         }
+
         User superAdminUser = new User();
         superAdminUser.setRoles(roleSet);
         superAdminUser.setFullName(AppConstants.INITIAL_ROLE);

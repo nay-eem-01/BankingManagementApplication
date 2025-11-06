@@ -16,7 +16,7 @@ public class AppConstants {
     public static String INITIAL_PASSWORD = "123456";
 
     public static String INITIAL_ROLE = "SUPER ADMIN";
-    public static String userRole = "USER";
+    public static String USER_ROLE = "USER";
 
     public static String consumerPermission = "USER";
     public static String consumerPermissionDesc = "User Generalized Permission";
